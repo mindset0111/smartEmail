@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Email Assistant Redesign Demo</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="top-nav-bar">
+        <div class="tab active-tab" data-ticket-id="ticket-1" data-tab-name="Item Not Received">
+            <span class="tab-label">Item Not Received</span>
+            <i class="fa-solid fa-xmark tab-close"></i>
+        </div>
+        <div class="tab" data-ticket-id="ticket-2" data-tab-name="Re: Faulty Item">
+            <span class="tab-label">Re: Faulty Item</span>
+            <i class="fa-solid fa-xmark tab-close"></i>
+        </div>
+        <div class="tab" data-ticket-id="ticket-3" data-tab-name="Re: Item Not Received">
+            <span class="tab-label">Re: Item Not Received</span>
+            <i class="fa-solid fa-xmark tab-close"></i>
+        </div>
+        <div class="tab add-tab">
+            <i class="fa-solid fa-plus"></i> Add
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="ticket-content active" data-ticket-id="ticket-1">
+            <div class="column email-logger">
+                <div class="logger-header">Email (Item Not Received)</div>
+                <div class="logger-item">
+                    <label>Brand</label>
+                    <div class="value">Next</div>
+                </div>
+                <div class="logger-item">
+                    <label>Requester</label>
+                    <div class="value">Jane (Dora)</div>
+                </div>
+                <div class="logger-item">
+                    <label>Issue Type</label>
+                    <div class="value">Item Not Received</div>
+                </div>
+                 <div class="logger-item">
+                    <label>Order Date</label>
+                    <div class="value">04 June 2025</div>
+                </div>
+                <div class="logger-item">
+                    <label>Item No. & Size</label>
+                    <div class="value">AW1569, Size: 40</div>
+                </div>
+                 <div class="logger-item">
+                    <label>Reorder Required</label>
+                    <div class="value">No (initially)</div>
+                </div>
+                <div class="logger-item">
+                    <label>Genesys Queue ID</label>
+                    <div class="value">b21e0a6-b9ba-493b-a...</div>
+                </div>
+            </div>
+
+            <div class="column email-trail-col">
+                <div class="email-trail-header">
+                    <span class="status-indicator"></span> Item Not Received <span class="email-meta">Jane (Dora) • 08 Jul 10:15</span>
+                </div>
+                <div class="email-trail-area">
+                    <div class="email-message customer-email">
+                        <div class="email-meta">Jane (Dora) • 20 Jun 09:30</div>
+                        <div class="email-body">
+                            <p>Please select your query from one of the following options: Online order & account enquiries</p>
+                            <p>Is your enquiry for: Item(s) not received</p>
+                            <p>Email address on account : test.customer@example.com</p>
+                            <p>Full name : Jane</p>
+                            <p>Post Code on account : 10000</p>
+                            <p>Item No. and Size : AW1569<br>Size: 40</p>
+                            <p>Reorder Required : No</p>
+                            <p>Comments : I have not received the order from 4th of June. The order was payed for and now 16 days after the order was made I still have not received my order. I kindly ask for a urgent feedback on when the order will be received or sending it again.</p>
+                        </div>
+                    </div>
+                    <div class="email-message advisor-reply">
+                        <div class="email-meta">The Next Team • 21 Jun 14:00</div>
+                        <div class="email-body">
+                            <p>Hi Dora,</p>
+                            <p>Thank you for contacting us.</p>
+                            <p>I apologize for the inconvenience regarding the item that you have not received yet, which prompted you to reach out to us.</p>
+                            <p>I contacted the courier to find out the delivery and parcel status for you. Please allow 3 working days for us to be updated and follow up.</p>
+                            <p>Could you also confirm your phone number registered with the account please?</p>
+                            <p>I hope this information is helpful for you, and I wish you a wonderful day.</p>
+                            <p>Kind regards,<br>The Next Team</p>
+                        </div>
+                    </div>
+                    <div class="email-message customer-email">
+                        <div class="email-meta">Jane (Dora) • 22 Jun 10:45</div>
+                        <div class="email-body">
+                            <p>Hi,</p>
+                            <p>phone number is: +381234556634</p>
+                            <p>Thank you and I look forward to hearing from you and receiving my order!</p>
+                            <p>Jane</p>
+                        </div>
+                    </div>
+                    <div class="email-message advisor-reply">
+                        <div class="email-meta">The Next Team • 25 Jun 16:30</div>
+                        <div class="email-body">
+                            <p>Hi Dora,</p>
+                            <p>Thank you for your email.</p>
+                            <p>I am so sorry for the delay in the delivery for your order placed on 4th June.</p>
+                            <p>Generally, it doesn't take so long for the orders to be delivered in your country. However, I can see that this time the courier has faced issues with the delivery, hence the delay.</p>
+                            <p>It seems that there was a change of delivery location that has caused further delay.</p>
+                            <p><a href="https://track.dpd.co.uk/parcels/15502321716908*20976" target="_blank">https://track.dpd.co.uk/parcels/15502321716908*20976</a></p>
+                            <p>Please rest assured, we intend to deliver all the delayed orders to our customers as soon as possible. I have requested the courier to look into this matter on priority.</p>
+                            <p>You can track the parcel at the tracking link (shared above) with the tracking number: 15502321716908</p>
+                            <p>I hope I have been able to answer your questions so far, and we will be in touch shortly once we have an update</p>
+                            <p>Kind regards,<br>The Next Team</p>
+                        </div>
+                    </div>
+                    <div class="email-message customer-email current-email">
+                        <div class="email-meta">Jane (Dora) • 08 Jul 10:15</div>
+                        <div class="email-body">
+                            <p>Thank you for your reply & care. Unfortunately I still have not received the package yet and every attempt to try get answers from delivery service is unsuccessful - they are not replying to my mails & they are impossible to get via phone.</p>
+                            <p>I urge you to fast track my delivery since I keep getting a message every day that my package is at their warehouse without any signs of delivery.</p>
+                            <p>I am waiting almost for a month now for a paid product. If you cannot get them to deliver the product I expect another one to be shipped and fast tracked…</p>
+                            <p>Best regards,<br>Jane</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="reply-box-placeholder">
+                    <div class="editable-email-template" contenteditable="true">
+                        Type your reply here...
+                    </div>
+                    <div class="reply-actions">
+                        <button class="btn send-reply-btn primary">Send Reply</button>
+                        <button class="btn save-draft-btn secondary">Save Draft</button>
+                        <button class="btn clear-draft-btn secondary">Clear Draft</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column ai-assist-col">
+                <div class="ai-assist-section active-summary">
+                    <h3>Email Assist</h3>
+                    <p>Past conversation summary:</p>
+                    <div class="customer-summary email-message">
+                        <h4>Customer Query:</h4>
+                        <p>Initial contact regarding unreceived order (from June 4th), paid for but not delivered after 16 days. Urgently requested feedback or re-sending. Provided phone number when asked. Current email expresses extreme frustration; package still not received after almost a month, delivery service unresponsive. Demands fast-tracked delivery or a new, fast-tracked shipment.</p>
+                    </div>
+                    <div class="advisor-summary email-message">
+                        <h4>Advisor Reply:</h4>
+                        <p>Apologized for inconvenience. Contacted courier for status, requested 3 working days for update, and asked for customer's phone number. Subsequently, apologized for delay, explained courier issues (delivery location change), provided tracking link, and assured escalation for priority resolution.</p>
+                    </div>
+                </div>
+                <div class="ai-assist-section response-options">
+                    <h3>AI assisted email response:</h3>
+                    <button class="btn ai-option-btn" data-draft-type="on-its-way">On It's Way / Within Promise</button>
+                    <button class="btn ai-option-btn" data-draft-type="confirmed-delay">Confirmed Delay</button>
+                    <button class="btn ai-option-btn" data-draft-type="item-not-in-stock">Item Not in Stock</button>
+                    <button class="btn ai-option-btn" data-draft-type="item-lost">Item Lost in Transit</button>
+                    <button class="btn ai-option-btn" data-draft-type="allow-longer">Allow longer</button>
+                </div>
+            </div>
+
+            <div class="column side-panel">
+                <div class="side-panel-header">Apps</div>
+                <div class="idv-panel-top-icons">
+                    <i class="fa-regular fa-eye"></i>
+                    <i class="fa-solid fa-gear"></i>
+                </div>
+                <div class="idv-section">
+                    <div class="idv-header">
+                        <i class="fa-solid fa-user-check"></i>
+                        <span>ID&V</span>
+                        <i class="fa-regular fa-star"></i>
+                        <i class="fa-solid fa-chevron-up"></i>
+                    </div>
+                    <div class="idv-sub-header">Existing Customer</div>
+
+                    <div class="idv-data-grid">
+                        <div class="idv-data-item">
+                            <label>Email Address</label>
+                            <div class="value">test.customer@example.com</div>
+                        </div>
+                        <div class="idv-data-item">
+                            <label>Customer Name</label>
+                            <div class="value"><i class="fa-solid fa-globe"></i> Jane (Dora)</div>
+                        </div>
+                        <div class="idv-data-item">
+                            <label>Address</label>
+                            <div class="value"><i class="fa-solid fa-location-dot"></i> 123 Main St</div>
+                        </div>
+                        <div class="idv-data-item">
+                            <label>Postcode</label>
+                            <div class="value">10000</div>
+                        </div>
+                        <div class="idv-data-item">
+                            <label>Country</label>
+                            <div class="value">UK</div>
+                        </div>
+                        <div class="idv-data-item">
+                            <label>Contact Number</label>
+                            <div class="value">+381234556634</div>
+                        </div>
+                    </div>
+
+                    <div class="idv-actions">
+                        <button class="idv-btn idv-btn-success"><i class="fa-solid fa-check"></i> Security Confirmed</button>
+                        <button class="idv-btn idv-btn-secondary"><i class="fa-solid fa-users"></i> 3rd Party</button>
+                        <button class="idv-btn idv-btn-danger"><i class="fa-solid fa-xmark"></i> Security Not Confirmed</button>
+                        <button class="idv-btn idv-btn-secondary"><i class="fa-solid fa-users"></i> 3rd Party</button>
+                    </div>
+
+                    <div class="idv-manual-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span>Manual Search</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ticket-content hidden" data-ticket-id="ticket-2">
+            <div class="column email-logger">
+                <div class="logger-header">Email (view)</div>
+                <div class="logger-item">
+                    <label>Brand</label>
+                    <div class="value">Next</div>
+                </div>
+                <div class="logger-item">
+                    <label>Requester</label>
+                    <div class="value">Jane Doe</div>
+                </div>
+                   <div class="logger-item">
+                    <label>Issue Type</label>
+                    <div class="value">Damaged Product</div>
+                </div>
+            </div>
+            <div class="column email-trail-col">
+                <div class="email-trail-header">
+                    <span class="status-indicator"></span> Re: Faulty Item <span class="email-meta">Jane Doe • 1 Jul 10:30</span>
+                </div>
+                <div class="email-trail-area">
+                    <div class="email-message customer-email">
+                        <div class="email-meta">Jane Doe</div>
+                        <div class="email-body">
+                            <p>Hi, I received my recent order, but the dress I ordered has a tear on the sleeve. I would like to request a replacement.</p>
+                        </div>
+                    </div>
+                </div>
+                   <div class="reply-box-placeholder">
+                    <div class="editable-email-template" contenteditable="true">
+                        This is a reply box for a different email...
+                    </div>
+                    <div class="reply-actions">
+                        <button class="btn send-reply-btn primary">Send Reply</button>
+                    </div>
+                </div>
+            </div>
+            <div class="column ai-assist-col">
+                <div class="ai-assist-section">
+                    <h3>AI Summary</h3>
+                    <p>Customer reports receiving a dress with a tear, requesting a replacement.</p>
+                </div>
+                <div class="ai-assist-section response-options">
+                    <h3>Draft Response Options:</h3>
+                    <button class="btn ai-option-btn">Offer Replacement</button>
+                    <button class="btn ai-option-btn">Offer Refund</button>
+                </div>
+            </div>
+            <div class="column side-panel">Side Panel Content for Ticket 2</div>
+        </div>
+
+        <div class="ticket-content hidden" data-ticket-id="ticket-3">
+            <div class="column email-logger">
+                <div class="logger-header">Email (view)</div>
+                <div class="logger-item">
+                    <label>Brand</label>
+                    <div class="value">Next</div>
+                </div>
+                <div class="logger-item">
+                    <label>Requester</label>
+                    <div class="value">Mark T.</div>
+                </div>
+                   <div class="logger-item">
+                    <label>Issue Type</label>
+                    <div class="value">Missing Parcel</div>
+                </div>
+            </div>
+            <div class="column email-trail-col">
+                <div class="email-trail-header">
+                    <span class="status-indicator"></span> Re: Item Not Received <span class="email-meta">Mark T. • 20 Jun 09:15</span>
+                </div>
+                <div class="email-trail-area">
+                    <div class="email-message customer-email">
+                        <div class="email-meta">Mark T.</div>
+                        <div class="email-body">
+                            <p>My order from June 10th has not arrived yet. Tracking says delivered but I never received it.</p>
+                        </div>
+                    </div>
+                </div>
+                   <div class="reply-box-placeholder">
+                    <div class="editable-email-template" contenteditable="true">
+                        This is a reply box for another email...
+                    </div>
+                    <div class="reply-actions">
+                        <button class="btn send-reply-btn primary">Send Reply</button>
+                    </div>
+                </div>
+            </div>
+            <div class="column ai-assist-col">
+                <div class="ai-assist-section">
+                    <h3>AI Summary</h3>
+                    <p>Customer reports unreceived order despite tracking stating delivery. Seeks investigation.</p>
+                </div>
+                <div class="ai-assist-section response-options">
+                    <h3>Draft Response Options:</h3>
+                    <button class="btn ai-option-btn">Initiate Investigation</button>
+                    <button class="btn ai-option-btn">Contact Courier</button>
+                </div>
+            </div>
+            <div class="column side-panel">Side Panel Content for Ticket 3</div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab:not(.add-tab)');
+            const ticketContents = document.querySelectorAll('.ticket-content');
+            const aiOptionBtns = document.querySelectorAll('.ai-option-btn');
+            
+            // Predefined draft replies for the "Item Not Received" scenario (ticket-1)
+            const draftReplies = {
+                'on-its-way': `Dear Jane,<br><br>
+Thank you for your email.<br>
+I'm pleased to confirm that your order is currently on its way and is expected to be delivered by <span class="highlight-placeholder">&lt;Expected Delivery Date&gt;</span>, as originally scheduled.<br>
+You can track the progress of your delivery using the tracking link provided in your dispatch confirmation email. If you haven’t received this, please let us know and we’ll be happy to resend it.<br><br>
+Should you have any further questions or need assistance in the meantime, feel free to get in touch.<br><br>
+Thank you for shopping with us.<br><br>
+Kind regards,<br>
+The Next Team`,
+                'confirmed-delay': `Dear Jane,<br><br>
+Thank you for your email. I’m sorry to hear that your parcel has not arrived as expected.<br><br>
+Upon reviewing your account, I can confirm that there has been a slight delay with your order. Your parcel is now scheduled to be delivered to <span class="highlight-placeholder">&lt;home/store&gt;</span> on <span class="highlight-placeholder">&lt;date&gt;</span>.<br><br>
+As the delivery did not arrive on time, I have arranged for the delivery charge to be refunded. You can find information on how long refunds take to appear in your account by visiting our Refund Timescales FAQ.<br><br>
+Please note that parcels delivered to the store are held for 10 days. If you no longer wish to receive your order, kindly let us know and we will arrange for it to be returned to us.<br><br>
+We sincerely apologise for any inconvenience this may have caused, and appreciate your patience.<br><br>
+Kind regards,<br>
+The Next Team`,
+                'item-not-in-stock': `Dear Jane,<br><br>
+Thank you for your email, and please accept my apologies for the delayed response.<br>
+I’m sorry that you’ve had to chase your recent order of four items, and for the inconvenience this has caused.<br><br>
+Upon reviewing your account, I can see that the items were delayed and were originally due for delivery on <span class="highlight-placeholder">&lt;Date&gt;</span>. However, we have since received an update confirming that we are no longer able to fulfil this order, as the items are now unfortunately sold out.<br>
+If payment has already been taken, a full refund will be issued to your original payment method within the next 5 working days.<br><br>
+We sincerely apologise for the disappointment and inconvenience this may have caused, especially after the wait. We hope you'll be able to find an alternative that suits your needs.<br>
+If there's anything else we can assist you with, please don’t hesitate to get in touch.<br><br>
+Kind regards,<br>
+The Next Team`,
+                'item-lost': `Dear Jane,<br><br>
+Thank you for your email, and I’m very sorry to hear that you haven’t received your order.<br><br>
+Having investigated this with our delivery partner, we’ve been advised that the parcel appears to have been lost in transit. Please accept our sincere apologies for the inconvenience this has caused.<br><br>
+To resolve this for you, we’d be happy to offer either:<br>
+•	A replacement of the item (subject to availability), or<br>
+•	A full refund to your original payment method<br><br>
+Please let us know which option you would prefer, and we’ll process it for you as quickly as possible.<br><br>
+Once again, I’m very sorry for the trouble, and thank you for your patience and understanding.<br><br>
+Kind regards,<br>
+The Next Team`,
+                'allow-longer': `Dear Jane,<br><br>
+Thank you for your email, and I appreciate your patience while we investigated this matter for you.<br>
+I’m sorry to hear that you haven’t received your item as expected.<br><br>
+Upon reviewing your account, I can confirm that there has been a slight delay. Your parcel is now due to be delivered within the next <span class="highlight-placeholder">&lt;time frame&gt;</span>.<br><br>
+As your order did not arrive on time, I have arranged for the delivery charge of <span class="highlight-placeholder">&lt;Delivery charge amount&gt;</span> to be refunded.<br>
+Please allow 3–5 working days for the refund to appear in your account. <br><br>
+I apologise for the inconvenience this delay may have caused and thank you again for your understanding.<br><br>
+Kind regards,<br>
+The Next Team`
+                // The 'offer-refund' draft is removed as it's no longer linked by a button.
+            };
+
+
+            // Tab switching logic
+            tabs.forEach(tab => {
+                tab.addEventListener('click', (event) => {
+                    // Prevent closing if click is on the tab itself, not the close button
+                    if (!event.target.classList.contains('tab-close')) {
+                        const ticketId = tab.dataset.ticketId;
+
+                        // Remove active class from all tabs and content
+                        tabs.forEach(t => t.classList.remove('active-tab'));
+                        ticketContents.forEach(tc => tc.classList.remove('active'));
+                        ticketContents.forEach(tc => tc.classList.add('hidden')); // Ensure all are hidden
+
+                        // Add active class to clicked tab and its content
+                        tab.classList.add('active-tab');
+                        document.querySelector(`.ticket-content[data-ticket-id="${ticketId}"]`).classList.remove('hidden');
+                        document.querySelector(`.ticket-content[data-ticket-id="${ticketId}"]`).classList.add('active');
+
+                        // Reset editable area when switching tabs (optional, but good for demo)
+                        // This needs to be done on the *active* editable area
+                        const activeEditableEmailTemplate = document.querySelector(`.ticket-content[data-ticket-id="${ticketId}"] .editable-email-template`);
+                        if (activeEditableEmailTemplate) {
+                            activeEditableEmailTemplate.innerHTML = "Type your reply here...";
+                        }
+                    }
+                });
+
+                // Close tab functionality (basic, just removes tab)
+                const closeBtn = tab.querySelector('.tab-close');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', () => {
+                        const ticketIdToClose = tab.dataset.ticketId;
+                        const contentToHide = document.querySelector(`.ticket-content[data-ticket-id="${ticketIdToClose}"]`);
+                        
+                        tab.remove();
+                        if(contentToHide) contentToHide.remove();
+
+                        // Activate the first remaining tab if the active one was closed
+                        const remainingTabs = document.querySelectorAll('.tab:not(.add-tab)');
+                        if (remainingTabs.length > 0 && !document.querySelector('.active-tab')) {
+                            remainingTabs[0].click(); // Simulate click on the first tab
+                        } else if (remainingTabs.length === 0) {
+                            // Handle case where all tabs are closed (e.g., show empty state)
+                            // For this demo, we'll just leave it empty.
+                        }
+                    });
+                }
+            });
+
+            // AI option buttons logic
+            aiOptionBtns.forEach(button => {
+                button.addEventListener('click', () => {
+                    const activeTicketContent = document.querySelector('.ticket-content.active');
+                    const activeTicketId = activeTicketContent ? activeTicketContent.dataset.ticketId : null;
+                    const editableEmailTemplateForActiveTab = activeTicketContent ? activeTicketContent.querySelector('.editable-email-template') : null;
+
+                    if (activeTicketId === 'ticket-1' && editableEmailTemplateForActiveTab) { // Only apply to the primary demo email
+                        const draftType = button.dataset.draftType;
+                        if (draftReplies[draftType]) {
+                            editableEmailTemplateForActiveTab.innerHTML = draftReplies[draftType];
+                            // Optional: Scroll to reply box
+                            editableEmailTemplateForActiveTab.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                    } else if (editableEmailTemplateForActiveTab) {
+                        alert("AI-drafted replies are primarily configured for the 'Item Not Received' demo.");
+                        editableEmailTemplateForActiveTab.innerHTML = "AI-drafted replies not available for this email in demo.";
+                    }
+                });
+            });
+
+            // Clear Draft button functionality
+            const clearDraftBtn = document.querySelector('.clear-draft-btn');
+            if (clearDraftBtn) {
+                clearDraftBtn.addEventListener('click', () => {
+                    const activeEditableEmailTemplate = document.querySelector('.ticket-content.active .editable-email-template');
+                    if (activeEditableEmailTemplate) {
+                        activeEditableEmailTemplate.innerHTML = "Type your reply here...";
+                    }
+                });
+            }
+
+            // Set initial state: first ticket content is active, others are hidden
+            document.querySelector('.ticket-content[data-ticket-id="ticket-1"]').classList.add('active');
+            document.querySelector('.ticket-content[data-ticket-id="ticket-1"]').classList.remove('hidden'); // Ensure it's not hidden by default
+        });
+    </script>
+</body>
+</html>
