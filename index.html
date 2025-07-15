@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Email Assistant Redesign Demo</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="top-nav-bar">
+        <div class="tab active-tab" data-ticket-id="ticket-1" data-tab-name="Item Not Received">
+            <span class="tab-label">Item Not Received</span>
+            <i class="fa-solid fa-xmark tab-close"></i>
+        </div>
+        <div class="tab" data-ticket-id="ticket-2" data-tab-name="Re: Faulty Item">
+            <span class="tab-label">Re: Faulty Item</span>
+            <i class="fa-solid fa-xmark tab-close"></i>
+        </div>
+        <div class="tab" data-ticket-id="ticket-3" data-tab-name="Re: Item Not Received">
+            <span class="tab-label">Re: Item Not Received</span>
+            <i class="fa-solid fa-xmark tab-close"></i>
+        </div>
+        <div class="tab add-tab">
+            <i class="fa-solid fa-plus"></i> Add
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="ticket-content active" data-ticket-id="ticket-1">
+            <div class="column email-logger">
+                <div class="logger-header">Email (Item Not Received)</div>
+                <div class="logger-item">
+                    <label>Brand</label>
+                    <div class="value">Next</div>
+                </div>
+                <div class="logger-item">
+                    <label>Requester</label>
+                    <div class="value">Jane (Dora)</div>
+                </div>
+                <div class="logger-item">
+                    <label>Issue Type</label>
+                    <div class="value">Item Not Received</div>
+                </div>
+                   <div class="logger-item">
+                    <label>Order Date</label>
+                    <div class="value">04 June 2025</div>
+                </div>
+                <div class="logger-item">
+                    <label>Item No. & Size</label>
+                    <div class="value">AW1569, Size: 40</div>
+                </div>
+                   <div class="logger-item">
+                    <label>Reorder Required</label>
+                    <div class="value">No (initially)</div>
+                </div>
+                <div class="logger-item">
+                    <label>Genesys Queue ID</label>
+                    <div class="value">b21e0a6-b9ba-493b-a...</div>
+                </div>
+            </div>
+
+            <div class="column email-trail-col">
+                <div class="email-trail-header">
+                    <span class="status-indicator"></span> Item Not Received <span class="email-meta">Jane (Dora) • 08 Jul 10:15</span>
+                </div>
+                <div class="email-trail-area">
+                    <div class="email-message customer-email">
+                        <div class="email-meta">Jane (Dora) • 20 Jun 09:30</div>
+                        <div class="email-body">
+                            <p>Please select your query from one of the following options: Online order & account enquiries</p>
+                            <p>Is your enquiry for: Item(s) not received</p>
+                            <p>Email address on account : test.customer@example.com</p>
+                            <p>Full name : Jane</p>
+                            <p>Post Code on account : 10000</p>
+                            <p>Item No. and Size : AW1569<br>Size: 40</p>
+                            <p>Reorder Required : No</p>
+                            <p>Comments : I have not received the order from 4th of June. The order was payed for and now 16 days after the order was made I still have not received my order. I kindly ask for a urgent feedback on when the order will be received or sending it again.</p>
+                        </div>
+                    </div>
+                    <div class="email-message advisor-reply">
+                        <div class="email-meta">The Next Team • 21 Jun 14:00</div>
+                        <div class="email-body">
+                            <p>Hi Dora,</p>
+                            <p>Thank you for contacting us.</p>
+                            <p>I apologize for the inconvenience regarding the item that you have not received yet, which prompted you to reach out to us.</p>
+                            <p>I contacted the courier to find out the delivery and parcel status for you. Please allow 3 working days for us to be updated and follow up.</p>
+                            <p>Could you also confirm your phone number registered with the account please?</p>
+                            <p>I hope this information is helpful for you, and I wish you a wonderful day.</p>
+                            <p>Kind regards,<br>The Next Team</p>
+                        </div>
+                    </div>
+                    <div class="email-message customer-email">
+                        <div class="email-meta">Jane (Dora) • 22 Jun 10:45</div>
+                        <div class="email-body">
+                            <p>Hi,</p>
+                            <p>phone number is: +381234556634</p>
+                            <p>Thank you and I look forward to hearing from you and receiving my order!</p>
+                            <p>Jane</p>
+                        </div>
+                    </div>
+                    <div class="email-message advisor-reply">
+                        <div class="email-meta">The Next Team • 25 Jun 16:30</div>
+                        <div class="email-body">
+                            <p>Hi Dora,</p>
+                            <p>Thank thank you for your email.</p>
+                            <p>I am so sorry for the delay in the delivery for your order placed on 4th June.</p>
+                            <p>Generally, it doesn't take so long for the orders to be delivered in your country. However, I can see that this time the courier has faced issues with the delivery, hence the delay.</p>
+                            <p>It seems that there was a change of delivery location that has caused further delay.</p>
+                            <p><a href="https://track.dpd.co.uk/parcels/15502321716908*20976" target="_blank">https://track.dpd.co.uk/parcels/15502321716908*20976</a></p>
+                            <p>Please rest assured, we intend to deliver all the delayed orders to our customers as soon as possible. I have requested the courier to look into this matter on priority.</p>
+                            <p>You can track the parcel at the tracking link (shared above) with the tracking number: 15502321716908</p>
+                            <p>I hope I have been able to answer your questions so far, and we will be in touch shortly once we have an update</p>
+                            <p>Kind regards,<br>The Next Team</p>
+                        </div>
+                    </div>
+                    <div class="email-message customer-email current-email">
+                        <div class="email-meta">Jane (Dora) • 08 Jul 10:15</div>
+                        <div class="email-body">
+                            <p>Thank you for your reply & care. Unfortunately I still have not received the package yet and every attempt to try get answers from delivery service is unsuccessful - they are not replying to my mails & they are impossible to get via phone.</p>
+                            <p>I urge you to fast track my delivery since I keep getting a message every day that my package is at their warehouse without any signs of delivery.</p>
+                            <p>I am waiting almost for a month now for a paid product. If you cannot get them to deliver the product I expect another one to be shipped and fast tracked…</p>
+                            <p>Best regards,<br>Jane</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="reply-box-placeholder">
+                    <div class="editable-email-template" contenteditable="true">
+                        Type your reply here...
+                    </div>
+                    <button class="btn rephrase-ai-btn secondary" style="display: none;">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Rephrase with AI
+                    </button>
+                    <div class="reply-actions">
+                        <button class="btn send-reply-btn primary">Send Reply</button>
+                        <button class="btn save-draft-btn secondary">Save Draft</button>
+                        <button class="btn clear-draft-btn secondary">Clear Draft</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column ai-assist-col">
+                <div class="ai-assist-section active-summary">
+                    <div class="summary-header-row">
+                        <h3>Conversation History</h3>
+                        <div class="total-contacts-box">
+                            <span class="contacts-label">Number of Emails:</span> 
+                            <div class="contact-count-circle"><span class="contacts-value">3</span></div>
+                        </div>
+                    </div>
+
+                    <div class="summary-line customer-summary-line">
+                        <span class="summary-date">20 Jun</span>, <span class="summary-role">Customer Query:</span> Reports non-receipt of order placed on June 4 (16 days ago); requests urgent feedback or re-shipment.
+                    </div>
+
+                    <div class="summary-line advisor-summary-line">
+                        <span class="summary-date">21 Jun</span>, <span class="summary-role">Advisor Reply:</span> Apologized; contacted courier for status (update expected within 3 business days); requested phone number.
+                    </div>
+
+                    <div class="summary-line customer-summary-line">
+                        <span class="summary-date">22 Jun</span>, <span class="summary-role">Customer Query:</span> Provided requested phone number.
+                    </div>
+
+                    <div class="summary-line advisor-summary-line">
+                        <span class="summary-date">25 Jun</span>, <span class="summary-role">Advisor Reply:</span> Apologized for delay; explained courier issue (location change); provided tracking link; escalated for priority.
+                    </div>
+
+                    <div class="summary-line customer-summary-line">
+                        <span class="summary-date">08 Jul</span>, <span class="summary-role">Customer Query:</span> Expresses extreme frustration (almost 1 month wait); delivery service unresponsive; demands fast-tracked delivery or new shipment.
+                    </div>
+                </div>
+                <div class="ai-assist-section response-options">
+                    <h3>Choose or Merge Template:</h3>
+                    <button class="btn ai-option-btn" data-draft-type="on-its-way">
+                        <input type="checkbox" class="merge-checkbox">
+                        On It's Way / Within Promise
+                    </button>
+                    <button class="btn ai-option-btn" data-draft-type="confirmed-delay">
+                        <input type="checkbox" class="merge-checkbox">
+                        Confirmed Delay
+                    </button>
+                    <button class="btn ai-option-btn" data-draft-type="item-not-in-stock">
+                        <input type="checkbox" class="merge-checkbox">
+                        Item Not in Stock
+                    </button>
+                    <button class="btn ai-option-btn" data-draft-type="item-lost">
+                        <input type="checkbox" class="merge-checkbox">
+                        Item Lost in Transit
+                    </button>
+                    <button class="btn ai-option-btn" data-draft-type="allow-longer">
+                        <input type="checkbox" class="merge-checkbox">
+                        Allow longer
+                    </button>
+
+                    <button class="btn action-btn primary">Action</button>
+                </div>
+            </div>
+
+            <div class="column side-panel">
+                <div class="side-panel-header">Apps</div>
+                <div class="idv-panel-top-icons">
+                    <i class="fa-regular fa-eye"></i>
+                    <i class="fa-solid fa-gear"></i>
+                </div>
+                <div class="idv-section">
+                    <div class="idv-header">
+                        <i class="fa-solid fa-user-check"></i>
+                        <span>ID&V</span>
+                        <i class="fa-regular fa-star"></i>
+                        <i class="fa-solid fa-chevron-up"></i>
+                    </div>
+                    <div class="idv-sub-header">Existing Customer</div>
+
+                    <div class="idv-data-grid">
+                        <div class="idv-data-item">
+                            <label>Email Address</label>
+                            <div class="value">test.customer@example.com</div>
+                        </div>
+                        <div class="idv-data-item">
+                            <label>Customer Name</label>
+                            <div class="value"><i class="fa-solid fa-globe"></i> Jane (Dora)</div>
+                        </div>
+                        <div class="idv-data-item">
+                            <label>Address</label>
+                            <div class="value"><i class="fa-solid fa-location-dot"></i> 123 Main St</div>
+                        </div>
+                        <div class="idv-data-item">
+                            <label>Postcode</label>
+                            <div class="value">10000</div>
+                        </div>
+                        <div class="idv-data-item">
+                            <label>Country</label>
+                            <div class="value">UK</div>
+                        </div>
+                        <div class="idv-data-item">
+                            <label>Contact Number</label>
+                            <div class="value">+381234556634</div>
+                        </div>
+                    </div>
+
+                    <div class="idv-actions">
+                        <button class="idv-btn idv-btn-success"><i class="fa-solid fa-check"></i> Security Confirmed</button>
+                        <button class="idv-btn idv-btn-secondary"><i class="fa-solid fa-users"></i> 3rd Party</button>
+                        <button class="idv-btn idv-btn-danger"><i class="fa-solid fa-xmark"></i> Security Not Confirmed</button>
+                        <button class="idv-btn idv-btn-secondary"><i class="fa-solid fa-users"></i> 3rd Party</button>
+                    </div>
+
+                    <div class="idv-manual-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span>Manual Search</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ticket-content hidden" data-ticket-id="ticket-2">
+            <div class="column email-logger">
+                <div class="logger-header">Email (view)</div>
+                <div class="logger-item">
+                    <label>Brand</label>
+                    <div class="value">Next</div>
+                </div>
+                <div class="logger-item">
+                    <label>Requester</label>
+                    <div class="value">Jane Doe</div>
+                </div>
+                   <div class="logger-item">
+                    <label>Issue Type</label>
+                    <div class="value">Damaged Product</div>
+                </div>
+            </div>
+            <div class="column email-trail-col">
+                <div class="email-trail-header">
+                    <span class="status-indicator"></span> Re: Faulty Item <span class="email-meta">Jane Doe • 1 Jul 10:30</span>
+                </div>
+                <div class="email-trail-area">
+                    <div class="email-message customer-email">
+                        <div class="email-meta">Jane Doe</div>
+                        <div class="email-body">
+                            <p>Hi, I received my recent order, but the dress I ordered has a tear on the sleeve. I would like to request a replacement.</p>
+                        </div>
+                    </div>
+                </div>
+                   <div class="reply-box-placeholder">
+                    <div class="editable-email-template" contenteditable="true">
+                        This is a reply box for a different email...
+                    </div>
+                    <div class="reply-actions">
+                        <button class="btn send-reply-btn primary">Send Reply</button>
+                    </div>
+                </div>
+            </div>
+            <div class="column ai-assist-col">
+                <div class="ai-assist-section">
+                    <h3>AI Summary</h3>
+                    <p>Customer reports receiving a dress with a tear, requesting a replacement.</p>
+                </div>
+                <div class="ai-assist-section response-options">
+                    <h3>Draft Response Options:</h3>
+                    <button class="btn ai-option-btn">Offer Replacement</button>
+                    <button class="btn ai-option-btn">Offer Refund</button>
+                </div>
+            </div>
+            <div class="column side-panel">Side Panel Content for Ticket 2</div>
+        </div>
+
+        <div class="ticket-content hidden" data-ticket-id="ticket-3">
+            <div class="column email-logger">
+                <div class="logger-header">Email (view)</div>
+                <div class="logger-item">
+                    <label>Brand</label>
+                    <div class="value">Next</div>
+                </div>
+                <div class="logger-item">
+                    <label>Requester</label>
+                    <div class="value">Mark T.</div>
+                </div>
+                   <div class="logger-item">
+                    <label>Issue Type</label>
+                    <div class="value">Missing Parcel</div>
+                </div>
+            </div>
+            <div class="column email-trail-col">
+                <div class="email-trail-header">
+                    <span class="status-indicator"></span> Re: Item Not Received <span class="email-meta">Mark T. • 20 Jun 09:15</span>
+                </div>
+                <div class="email-trail-area">
+                    <div class="email-message customer-email">
+                        <div class="email-meta">Mark T.</div>
+                        <div class="email-body">
+                            <p>My order from June 10th has not arrived yet. Tracking says delivered but I never received it.</p>
+                        </div>
+                    </div>
+                </div>
+                   <div class="reply-box-placeholder">
+                    <div class="editable-email-template" contenteditable="true">
+                        This is a reply box for another email...
+                    </div>
+                    <div class="reply-actions">
+                        <button class="btn send-reply-btn primary">Send Reply</button>
+                    </div>
+                </div>
+            </div>
+            <div class="column ai-assist-col">
+                <div class="ai-assist-section">
+                    <h3>AI Summary</h3>
+                    <p>Customer reports unreceived order despite tracking stating delivery. Seeks investigation.</p>
+                </div>
+                <div class="ai-assist-section response-options">
+                    <h3>Draft Response Options:</h3>
+                    <button class="btn ai-option-btn">Initiate Investigation</button>
+                    <button class="btn ai-option-btn">Contact Courier</button>
+                </div>
+            </div>
+            <div class="column side-panel">Side Panel Content for Ticket 3</div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab:not(.add-tab)');
+            const ticketContents = document.querySelectorAll('.ticket-content');
+            const aiOptionBtns = document.querySelectorAll('.ai-option-btn');
+            const actionBtn = document.querySelector('.action-btn'); // Reference to the single Action button
+            const editableEmailTemplate = document.querySelector('.editable-email-template'); 
+            const rephraseAiBtn = document.querySelector('.rephrase-ai-btn'); 
+            const clearDraftBtn = document.querySelector('.clear-draft-btn'); // Reference to the Clear Draft button
+
+            let selectedTemplatesForMerge = []; // Now stores selected template types
+
+            // Predefined draft replies
+            const draftReplies = {
+                'on-its-way': `Dear Jane,<br><br>
+Thank you for your email, and I appreciate your patience while we investigated this matter for you.<br>
+I'm sorry to hear that you haven’t received your item as quickly as expected, but I’m pleased to confirm that your order is currently on its way.<br><br>
+Your order is expected to be delivered by <span class="highlight-placeholder">&lt;Expected Delivery Date&gt;</span>, as originally scheduled.<br>
+You can track the progress of your delivery using the tracking link provided in your dispatch confirmation email. If you haven’t received this, please let us know and we’ll be happy to resend it.<br><br>
+Should you have any further questions or need assistance in the meantime, feel free to get in touch.<br><br>
+Kind regards,<br>
+The Next Team`,
+                'confirmed-delay': `Dear Jane,<br><br>
+Thank you for your email. I’m sorry to hear that your parcel has not arrived as expected.<br><br>
+Upon reviewing your account, I can confirm that there has been a slight delay with your order. Your parcel is now scheduled to be delivered to <span class="highlight-placeholder">&lt;home/store&gt;</span> on <span class="highlight-placeholder">&lt;date&gt;</span>.<br><br>
+As your order did not arrive on time, I have arranged for the delivery charge of <span class="highlight-placeholder">&lt;Delivery charge amount&gt;</span> to be refunded. Please allow 3–5 working days for the refund to appear in your account.<br><br>
+Please note that parcels delivered to the store are held for 10 days. If you no longer wish to receive your order, kindly let us know and we will arrange for it to be returned to us.<br><br>
+We sincerely apologise for any inconvenience this may have caused, and appreciate your patience.<br><br>
+Kind regards,<br>
+The Next Team`,
+                'item-not-in-stock': `Dear Jane,<br><br>
+Thank you for your email, and please accept my apologies for the delayed response.<br>
+I’m sorry that you’ve had to chase your recent order of four items, and for the inconvenience this has caused.<br><br>
+Upon reviewing your account, I can see that the items were delayed and were originally due for delivery on <span class="highlight-placeholder">&lt;Date&gt;</span>. However, we have since received an update confirming that we are no longer able to fulfil this order, as the items are now unfortunately sold out.<br>
+If payment has already been taken, a full refund will be issued to your original payment method within the next 5 working days.<br><br>
+We sincerely apologise for the disappointment and inconvenience this may have caused, especially after the wait. We hope you'll be able to find an alternative that suits your needs.<br>
+If there's anything else we can assist you with, please don’t hesitate to get in touch.<br><br>
+Kind regards,<br>
+The Next Team`,
+                'item-lost': `Dear Jane,<br><br>
+Thank you for your email, and I’m very sorry to hear that you haven’t received your order.<br><br>
+Having investigated this with our delivery partner, we’ve been advised that the parcel appears to have been lost in transit. Please accept our sincere apologies for the inconvenience this has caused.<br><br>
+To resolve this for you, we’d be happy to offer either:<br>
+•	A replacement of the item (subject to availability), or<br>
+•	A full refund to your original payment method<br><br>
+Please let us know which option you would prefer, and we’ll process it for you as quickly as possible.<br><br>
+Once again, I’m very sorry for the trouble, and thank you for your patience and understanding.<br><br>
+Kind regards,<br>
+The Next Team`,
+                'allow-longer': `Dear Jane,<br><br>
+Thank you for your email, and I appreciate your patience while we investigated this matter for you.<br>
+I’m sorry to hear that you haven’t received your item as expected.<br><br>
+Upon reviewing your account, I can confirm that there has been a slight delay. Your parcel is now due to be delivered within the next <span class="highlight-placeholder">&lt;time frame&gt;</span>.<br><br>
+As your order did not arrive on time, I have arranged for the delivery charge of <span class="highlight-placeholder">&lt;Delivery charge amount&gt;</span> to be refunded. Please allow 3–5 working days for the refund to appear in your account. <br><br>
+I apologise for the inconvenience this delay may have caused and thank you again for your understanding.<br><br>
+Kind regards,<br>
+The Next Team`,
+                'allow-longer-on-its-way-merged': `Dear Jane,<br><br>
+Thank you for your email, and I appreciate your patience while we investigated this matter for you.<br>
+I'm sorry to hear that you haven’t received your item as quickly as expected, but I’m pleased to confirm that your order is currently on its way.<br><br>
+Upon reviewing your account, I can confirm there has been a slight delay. Your parcel is now expected to be delivered by <span class="highlight-placeholder">&lt;Expected Delivery Date&gt;</span>, which is within the next <span class="highlight-placeholder">&lt;time frame&gt;</span>.<br>
+You can track the progress of your delivery using the tracking link provided in your dispatch confirmation email. If you haven’t received this, please let us know and we’ll be happy to resend it.<br><br>
+As your order did not arrive on time, I have arranged for the delivery charge of <span class="highlight-placeholder">&lt;Delivery charge amount&gt;</span> to be refunded. Please allow 3–5 working days for the refund to appear in your account.<br><br>
+We sincerely apologise for any inconvenience this delay may have caused, and thank you again for your understanding. Should you have any further questions or need assistance in the meantime, please feel free to get in touch.<br><br>
+Thank you for shopping with us.<br><br>
+Kind regards,<br>
+The Next Team`
+            };
+
+            // Function to reset template selections (checkboxes)
+            function resetTemplateSelections() {
+                aiOptionBtns.forEach(button => {
+                    const checkbox = button.querySelector('.merge-checkbox');
+                    if (checkbox) {
+                        checkbox.checked = false;
+                    }
+                });
+                selectedTemplatesForMerge = [];
+            }
+
+            // NEW: Function to reset "used" template styling
+            function resetUsedTemplates() {
+                aiOptionBtns.forEach(button => {
+                    button.classList.remove('used-template');
+                });
+            }
+
+            // Function to check and update rephrase button visibility
+            function updateRephraseButtonVisibility() {
+                const currentContent = editableEmailTemplate.innerHTML.trim();
+                const placeholderContent = "Type your reply here...";
+                
+                if (currentContent && currentContent !== placeholderContent) {
+                    rephraseAiBtn.style.display = 'inline-flex';
+                } else {
+                    rephraseAiBtn.style.display = 'none';
+                }
+            }
+
+            // Tab switching logic
+            tabs.forEach(tab => {
+                tab.addEventListener('click', (event) => {
+                    if (!event.target.classList.contains('tab-close')) {
+                        const ticketId = tab.dataset.ticketId;
+                        tabs.forEach(t => t.classList.remove('active-tab'));
+                        ticketContents.forEach(tc => tc.classList.remove('active'));
+                        ticketContents.forEach(tc => tc.classList.add('hidden'));
+                        tab.classList.add('active-tab');
+                        document.querySelector(`.ticket-content[data-ticket-id="${ticketId}"]`).classList.remove('hidden');
+                        document.querySelector(`.ticket-content[data-ticket-id="${ticketId}"]`).classList.add('active');
+                        
+                        editableEmailTemplate.innerHTML = "Type your reply here...";
+                        resetTemplateSelections(); // Reset selections on tab switch
+                        resetUsedTemplates(); // NEW: Also remove 'used-template' classes on tab switch
+                        updateRephraseButtonVisibility(); 
+                    }
+                });
+
+                const closeBtn = tab.querySelector('.tab-close');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', () => {
+                        const ticketIdToClose = tab.dataset.ticketId;
+                        const contentToHide = document.querySelector(`.ticket-content[data-ticket-id="${ticketIdToClose}"]`);
+                        
+                        tab.remove();
+                        if(contentToHide) contentToHide.remove();
+                        resetTemplateSelections(); // Reset selections if tab is closed
+                        resetUsedTemplates(); // NEW: Also remove 'used-template' classes on tab close
+                        updateRephraseButtonVisibility(); 
+
+                        const remainingTabs = document.querySelectorAll('.tab:not(.add-tab)');
+                        if (remainingTabs.length > 0 && !document.querySelector('.active-tab')) {
+                            remainingTabs[0].click();
+                        } else if (remainingTabs.length === 0) {
+                            // Handle case where all tabs are closed
+                        }
+                    });
+                }
+            });
+
+            // AI option buttons logic (only for selection now)
+            aiOptionBtns.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const activeTicketId = document.querySelector('.active-tab').dataset.ticketId;
+
+                    if (activeTicketId !== 'ticket-1') {
+                        alert("Template selection and 'Action' functionality are primarily configured for the 'Item Not Received' demo.");
+                        return; // Exit if not ticket-1
+                    }
+
+                    const checkbox = button.querySelector('.merge-checkbox');
+                    const draftType = button.dataset.draftType;
+
+                    // Toggle checkbox state (if click was not directly on checkbox)
+                    if (event.target !== checkbox) {
+                           checkbox.checked = !checkbox.checked; 
+                    }
+                    
+                    if (checkbox.checked) {
+                        if (selectedTemplatesForMerge.length < 2) {
+                            selectedTemplatesForMerge.push(draftType);
+                        } else {
+                            alert("Please select only two templates for merging. Deselect one to choose another.");
+                            checkbox.checked = false; // Deselect the one just clicked
+                        }
+                    } else {
+                        // Remove from selection
+                        selectedTemplatesForMerge = selectedTemplatesForMerge.filter(item => item !== draftType);
+                    }
+                });
+            });
+
+            // Action button click handler
+            actionBtn.addEventListener('click', () => {
+                if (selectedTemplatesForMerge.length === 0) {
+                    alert("Please select at least one template.");
+                    return;
+                }
+
+                let templateLoaded = false; // Flag to check if a template was successfully loaded
+
+                if (selectedTemplatesForMerge.length === 1) {
+                    const draftType = selectedTemplatesForMerge[0];
+                    if (draftReplies[draftType]) {
+                        editableEmailTemplate.innerHTML = draftReplies[draftType];
+                        templateLoaded = true;
+                    } else {
+                        alert("Selected template draft not found.");
+                    }
+                } else if (selectedTemplatesForMerge.length === 2) {
+                    selectedTemplatesForMerge.sort();
+                    const mergedKey = selectedTemplatesForMerge.join('-') + '-merged';
+                    
+                    if (draftReplies[mergedKey]) {
+                        editableEmailTemplate.innerHTML = draftReplies[mergedKey];
+                        templateLoaded = true;
+                    } else {
+                        alert(`No specific merged draft configured for "${selectedTemplatesForMerge.join(' + ')}". Concatenating for demo.`);
+                        let combinedHtml = "";
+                        selectedTemplatesForMerge.forEach(key => {
+                            if (draftReplies[key]) {
+                                let tempDraft = draftReplies[key];
+                                tempDraft = tempDraft.replace(/Dear Jane,<br><br>/, '');
+                                tempDraft = tempDraft.replace(/Kind regards,<br>The Next Team/, '');
+                                tempDraft = tempDraft.replace(/Thank you for your email\.<br><br>/, ''); 
+                                combinedHtml += tempDraft + '<br><br>---<br><br>'; 
+                            }
+                        });
+                        if (combinedHtml) {
+                            editableEmailTemplate.innerHTML = "Dear Jane,<br><br>" + combinedHtml.replace(/<br><br>---<br><br>$/, '') + "<br><br>Kind regards,<br>The Next Team";
+                            templateLoaded = true;
+                        } else {
+                            editableEmailTemplate.innerHTML = "Failed to generate merged draft.";
+                        }
+                    }
+                } else {
+                    // Should not happen if selection limit works, but as a safeguard
+                    alert("Something went wrong: too many templates selected. Please select one or two.");
+                }
+                
+                if (templateLoaded) { // Only mark as used and scroll if a template was successfully loaded
+                    editableEmailTemplate.innerHTML = editableEmailTemplate.innerHTML.replace("Type your reply here...", "").trim(); // Remove placeholder if present
+                    editableEmailTemplate.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    
+                    // Mark used templates
+                    aiOptionBtns.forEach(button => {
+                        const draftType = button.dataset.draftType;
+                        if (selectedTemplatesForMerge.includes(draftType)) {
+                            button.classList.add('used-template');
+                        }
+                    });
+                }
+                
+                resetTemplateSelections(); // Clear selections *after* marking them as used
+                updateRephraseButtonVisibility(); // Update rephrase button visibility after action
+            });
+
+            // Clear Draft button functionality
+            if (clearDraftBtn) {
+                clearDraftBtn.addEventListener('click', () => {
+                    editableEmailTemplate.innerHTML = "Type your reply here...";
+                    updateRephraseButtonVisibility(); // Update rephrase button visibility after clearing
+                    resetUsedTemplates(); // NEW: Revert "used" template colors
+                });
+            }
+
+            // Rephrase with AI button click handler (Does not change content)
+            rephraseAiBtn.addEventListener('click', async () => { 
+                let originalText = editableEmailTemplate.innerHTML.trim();
+                const placeholderContent = "Type your reply here...";
+
+                if (!originalText || originalText === placeholderContent) {
+                    alert("Please enter some text to rephrase.");
+                    return;
+                }
+
+                rephraseAiBtn.disabled = true;
+                const originalBtnHtml = rephraseAiBtn.innerHTML; 
+                rephraseAiBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Rephrasing...';
+
+                try {
+                    await new Promise(resolve => setTimeout(resolve, 1500)); 
+                    
+                    console.log("AI rephrasing process completed. Content was not updated as per user request.");
+
+                } catch (error) {
+                    console.error('Error during AI rephrasing:', error);
+                    alert(`An error occurred during rephrasing. Error: ${error.message}`);
+                } finally {
+                    rephraseAiBtn.disabled = false;
+                    rephraseAiBtn.innerHTML = originalBtnHtml; 
+                    updateRephraseButtonVisibility(); 
+                }
+            });
+
+            // Initial visibility check when page loads
+            updateRephraseButtonVisibility();
+            
+            // Listen for input events on the editable template to toggle button visibility dynamically
+            editableEmailTemplate.addEventListener('input', updateRephraseButtonVisibility);
+
+            // Set initial state: first ticket content is active, others are hidden
+            document.querySelector('.ticket-content[data-ticket-id="ticket-1"]').classList.add('active');
+            document.querySelector('.ticket-content[data-ticket-id="ticket-1"]').classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
