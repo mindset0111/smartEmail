@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Assist · Agent Desktop</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --ink:#16202b; --ink-2:#44515f; --ink-3:#7a8794;
+  --paper:#f2f4f6; --surface:#ffffff; --line:#dde3e9; --line-2:#c6ced6;
+  --complaint:#c9382e; --complaint-bg:#fdeeec; --complaint-line:#f0c4bf;
+  --vuln:#6d38c9; --vuln-bg:#f3edfd; --vuln-line:#d9c8f4;
+  --ok:#177a4f; --ok-bg:#e9f6ef; --ok-line:#bfe3d0;
+  --warn:#a56a12; --warn-bg:#fdf3e0; --warn-line:#f0d8a8;
+  --accent:#16202b;
+  --mono:'IBM Plex Mono',monospace; --sans:'IBM Plex Sans',sans-serif;
+  --r:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:13.5px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+button{font-family:var(--sans);cursor:pointer}
+
+/* ---------- top chrome ---------- */
+.appbar{background:var(--ink);color:#fff;display:flex;align-items:center;gap:16px;padding:0 16px;height:46px;flex-shrink:0}
+.appbar .logo{font-weight:600;letter-spacing:.4px;font-size:14px;display:flex;align-items:center;gap:8px}
+.appbar .logo i{color:#9fd6c3}
+.view-switch{display:flex;background:rgba(255,255,255,.1);border-radius:6px;padding:3px;margin-left:8px}
+.view-switch button{border:0;background:transparent;color:#c7cfd7;font-size:12.5px;font-weight:500;padding:5px 14px;border-radius:5px}
+.view-switch button.on{background:#fff;color:var(--ink)}
+.appbar .spacer{flex:1}
+.appbar .agent{font-size:12px;color:#aeb8c2;display:flex;align-items:center;gap:8px}
+.appbar .agent .dot{width:8px;height:8px;border-radius:50%;background:#3fbf7f}
+.eod-pill{font-family:var(--mono);font-size:11.5px;background:rgba(255,255,255,.12);padding:4px 10px;border-radius:20px;color:#e6ebf0}
+
+/* ---------- tabs ---------- */
+.tabbar{display:flex;gap:4px;background:#e6eaee;padding:8px 12px 0;border-bottom:1px solid var(--line-2);flex-shrink:0}
+.tab{display:flex;align-items:center;gap:8px;background:#d5dbe1;border:1px solid var(--line-2);border-bottom:0;border-radius:8px 8px 0 0;padding:8px 12px;font-size:12.5px;color:var(--ink-2);cursor:pointer;max-width:240px}
+.tab.active{background:var(--paper);color:var(--ink);font-weight:500;border-color:var(--line-2)}
+.tab .badge{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.tab .badge.c{background:var(--complaint)} .tab .badge.v{background:var(--vuln)} .tab .badge.n{background:#9aa6b1}
+.tab .lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tab .fa-xmark{font-size:11px;color:var(--ink-3)}
+.tab .fa-xmark:hover{color:var(--complaint)}
+
+/* ---------- layout ---------- */
+.workspace{flex:1;display:none;overflow:hidden}
+.workspace.on{display:block}
+.ticket{display:none;height:100%;grid-template-columns:270px minmax(420px,1fr) 380px;gap:12px;padding:12px}
+.ticket.on{display:grid}
+.col{background:var(--surface);border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.col-head{padding:10px 14px;border-bottom:1px solid var(--line);font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--ink-2);display:flex;align-items:center;gap:8px;flex-shrink:0}
+.col-body{overflow-y:auto;flex:1;min-height:0}
+
+/* ---------- left: auto logger ---------- */
+.log-item{padding:9px 14px;border-bottom:1px solid #eef1f4}
+.log-item label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-3);margin-bottom:2px}
+.log-item .val{font-size:12.5px;color:var(--ink);word-break:break-word}
+.log-item .val.mono{font-family:var(--mono);font-size:11.5px}
+.autofield{position:relative}
+.autofield .val::after{content:'auto';font-family:var(--mono);font-size:9px;color:var(--ok);background:var(--ok-bg);border:1px solid var(--ok-line);border-radius:3px;padding:1px 4px;margin-left:6px;vertical-align:1px}
+.flag-row{display:flex;gap:6px;padding:10px 14px;border-bottom:1px solid #eef1f4;flex-wrap:wrap}
+.flag{font-size:11px;font-weight:600;border-radius:5px;padding:4px 9px;display:inline-flex;align-items:center;gap:6px}
+.flag.c{background:var(--complaint-bg);color:var(--complaint);border:1px solid var(--complaint-line)}
+.flag.v{background:var(--vuln-bg);color:var(--vuln);border:1px solid var(--vuln-line)}
+.flag.n{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-line)}
+.idv{padding:10px 14px}
+.idv h5{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-3);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.idv .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11.5px;margin-bottom:10px}
+.idv .grid label{display:block;font-size:9.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.4px}
+.idv-btns{display:flex;gap:6px}
+.idv-btns button{flex:1;border:1px solid var(--line-2);background:#fff;border-radius:6px;padding:6px 4px;font-size:11px;font-weight:500}
+.idv-btns .ok-b{border-color:var(--ok-line);color:var(--ok);background:var(--ok-bg)}
+.idv-btns .no-b{border-color:var(--complaint-line);color:var(--complaint);background:var(--complaint-bg)}
+
+/* ---------- centre: email trail ---------- */
+.trail-head{padding:12px 16px;border-bottom:1px solid var(--line);flex-shrink:0}
+.trail-head .subj{font-size:15px;font-weight:600}
+.trail-head .meta{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:3px}
+.trail{overflow-y:auto;flex:1;padding:14px 16px;min-height:0}
+.msg{border:1px solid var(--line);border-radius:10px;margin-bottom:12px;overflow:hidden}
+.msg .m-head{display:flex;align-items:center;gap:8px;padding:7px 12px;font-size:11.5px;background:#f7f9fa;border-bottom:1px solid #eef1f4}
+.msg .who{font-weight:600}
+.msg .when{font-family:var(--mono);color:var(--ink-3);margin-left:auto;font-size:10.5px}
+.msg .m-body{padding:12px 14px;line-height:1.55;color:var(--ink-2);font-size:13px}
+.msg .m-body p{margin-bottom:8px}
+.msg.cust{border-left:3px solid var(--ink)}
+.msg.adv{border-left:3px solid #9aa6b1;background:#fbfcfd}
+.msg.latest{border-color:var(--line-2);box-shadow:0 1px 4px rgba(22,32,43,.08)}
+mark.ev-c{background:var(--complaint-bg);border-bottom:2px solid var(--complaint);color:inherit;padding:0 1px}
+mark.ev-v{background:var(--vuln-bg);border-bottom:2px solid var(--vuln);color:inherit;padding:0 1px}
+mark.pulse{animation:pulse .9s ease 2}
+@keyframes pulse{0%,100%{filter:none}50%{filter:brightness(.85)}}
+
+/* reply box */
+.replybox{border-top:1px solid var(--line);padding:12px 16px;flex-shrink:0;background:#fbfcfd}
+.editor{min-height:96px;max-height:220px;overflow-y:auto;border:1px solid var(--line-2);border-radius:8px;background:#fff;padding:10px 12px;font-size:13px;line-height:1.55;color:var(--ink-2);outline:none}
+.editor:focus{border-color:var(--ink)}
+.editor .ph{color:#a7b1bb}
+.reply-actions{display:flex;gap:8px;margin-top:10px;align-items:center}
+.btn{border-radius:7px;border:1px solid var(--line-2);background:#fff;padding:8px 14px;font-size:12.5px;font-weight:500;color:var(--ink)}
+.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.primary:hover{background:#25313e}
+.btn:hover{background:#f2f4f6}
+.btn.primary:hover{background:#25313e}
+.tone-note{font-size:11px;color:var(--vuln);margin-left:auto;display:none;align-items:center;gap:6px}
+.tone-note.on{display:inline-flex}
+
+/* ---------- right: AI assist ---------- */
+.ai-col{gap:0}
+.scanbar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--ink-3);flex-shrink:0}
+.scanbar .sweep{flex:1;height:4px;border-radius:3px;background:#e8ecef;overflow:hidden;position:relative}
+.scanbar .sweep i{position:absolute;inset:0;width:35%;background:var(--ink);border-radius:3px;animation:sweep 1s linear infinite;display:block}
+@keyframes sweep{0%{left:-35%}100%{left:100%}}
+.scanbar.done .sweep i{animation:none;width:100%;left:0;background:var(--ok)}
+.ai-section{padding:12px 14px;border-bottom:1px solid var(--line)}
+.ai-section h4{font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-3);margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.class-card{border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin-bottom:8px}
+.class-card .top{display:flex;align-items:center;gap:8px}
+.class-card .top .t{font-weight:600;font-size:13px}
+.class-card .top .conf{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--ink-3)}
+.class-card .why{font-size:12px;color:var(--ink-2);margin-top:6px;line-height:1.5}
+.class-card.c{border-color:var(--complaint-line);background:var(--complaint-bg)}
+.class-card.c .top .t{color:var(--complaint)}
+.class-card.v{border-color:var(--vuln-line);background:var(--vuln-bg)}
+.class-card.v .top .t{color:var(--vuln)}
+.class-card.n{border-color:var(--ok-line);background:var(--ok-bg)}
+.class-card.n .top .t{color:var(--ok)}
+.sig-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.sig{font-size:11px;border-radius:14px;padding:3px 10px;border:1px solid;cursor:pointer;background:#fff}
+.sig.c{color:var(--complaint);border-color:var(--complaint-line)}
+.sig.v{color:var(--vuln);border-color:var(--vuln-line)}
+.sig:hover{filter:brightness(.96)}
+.hitl{display:flex;gap:6px;margin-top:10px}
+.hitl button{flex:1;font-size:11.5px;padding:6px 8px;border-radius:6px;border:1px solid var(--line-2);background:#fff;font-weight:500}
+.hitl .yes{color:var(--ok);border-color:var(--ok-line)}
+.hitl .yes.done{background:var(--ok);border-color:var(--ok);color:#fff}
+.hitl .no{color:var(--ink-2)}
+.drv{display:flex;align-items:center;gap:8px;font-size:12px;margin-top:6px}
+.drv i{width:16px;text-align:center;color:var(--vuln)}
+.summ-line{font-size:12px;padding:7px 10px;border-left:3px solid var(--line-2);margin-bottom:6px;background:#fafbfc;border-radius:0 6px 6px 0;line-height:1.45;color:var(--ink-2)}
+.summ-line.cu{border-left-color:var(--ink)}
+.summ-line .d{font-family:var(--mono);font-size:10.5px;color:var(--ink-3)}
+.tmpl{display:flex;align-items:center;gap:9px;width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 11px;font-size:12.5px;margin-bottom:6px}
+.tmpl:hover{border-color:var(--ink-3)}
+.tmpl input{pointer-events:none}
+.tmpl .rec{margin-left:auto;font-size:10px;font-weight:600;color:var(--ok);background:var(--ok-bg);border:1px solid var(--ok-line);border-radius:4px;padding:2px 6px}
+.tmpl.used{background:#f2f4f6;color:var(--ink-3)}
+.gen-row{display:flex;gap:8px;margin-top:8px}
+.gen-row .btn{flex:1;text-align:center}
+
+/* ---------- EOD view ---------- */
+.eodwrap{height:100%;overflow-y:auto;padding:18px 22px}
+.eod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.stat .k{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-3)}
+.stat .n{font-size:26px;font-weight:600;margin-top:4px;font-family:var(--mono)}
+.stat.c .n{color:var(--complaint)} .stat.v .n{color:var(--vuln)} .stat.g .n{color:var(--ok)}
+.eod-cols{display:grid;grid-template-columns:1.2fr 1fr;gap:12px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.panel h3{padding:11px 14px;border-bottom:1px solid var(--line);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-2);display:flex;align-items:center;gap:8px}
+.panel h3 .btn{margin-left:auto;padding:4px 10px;font-size:11px}
+table.eod{width:100%;border-collapse:collapse;font-size:12px}
+table.eod th{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--ink-3);text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);background:#fafbfc}
+table.eod td{padding:9px 12px;border-bottom:1px solid #eef1f4;vertical-align:top}
+table.eod .mono{font-family:var(--mono);font-size:11px;color:var(--ink-2)}
+.pill{font-size:10.5px;font-weight:600;border-radius:4px;padding:2px 7px;display:inline-block}
+.pill.c{background:var(--complaint-bg);color:var(--complaint);border:1px solid var(--complaint-line)}
+.pill.v{background:var(--vuln-bg);color:var(--vuln);border:1px solid var(--vuln-line)}
+.pill.n{background:#f0f2f4;color:var(--ink-3);border:1px solid var(--line)}
+.pill.g{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-line)}
+.pill.w{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-line)}
+.livelog{font-family:var(--mono);font-size:11px;line-height:1.7;padding:12px 14px;overflow-y:auto;max-height:260px;background:#0f1720;color:#c8d3dd;flex:1}
+.livelog .t{color:#6d7d8c}
+.livelog .ev-c{color:#ff9d94;background:none;border:0} .livelog .ev-v{color:#c9a8ff;background:none;border:0}
+.livelog .ok{color:#7fd8ab}
+.eod-draft{padding:12px 14px}
+.eod-draft textarea{width:100%;min-height:280px;border:1px solid var(--line-2);border-radius:8px;padding:12px;font-family:var(--mono);font-size:11.5px;line-height:1.6;color:var(--ink-2);resize:vertical;background:#fbfcfd}
+.copied{color:var(--ok)!important;border-color:var(--ok-line)!important}
+@media (max-width:1200px){.ticket{grid-template-columns:240px 1fr 330px}}
+@media (max-width:980px){.ticket{grid-template-columns:1fr;overflow-y:auto}.col{min-height:auto;max-height:none}.eod-grid{grid-template-columns:repeat(2,1fr)}.eod-cols{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="appbar">
+  <div class="logo"><i class="fa-solid fa-envelope-circle-check"></i> Email Assist</div>
+  <div class="view-switch">
+    <button id="vw-work" class="on"><i class="fa-regular fa-folder-open"></i>&nbsp; Workspace</button>
+    <button id="vw-eod"><i class="fa-regular fa-clipboard"></i>&nbsp; EOD Log</button>
+  </div>
+  <div class="spacer"></div>
+  <div class="eod-pill"><i class="fa-regular fa-clock"></i> <span id="clock">—</span> · shift ends 18:00</div>
+  <div class="agent"><span class="dot"></span> Advisor: A. Sharma</div>
+</div>
+
+<div class="tabbar" id="tabbar"></div>
+
+<div class="workspace on" id="workspace"></div>
+
+<div class="workspace" id="eodview">
+  <div class="eodwrap">
+    <div class="eod-grid">
+      <div class="stat"><div class="k">Emails handled</div><div class="n" id="st-handled">0</div></div>
+      <div class="stat c"><div class="k">Complaints logged</div><div class="n" id="st-complaints">0</div></div>
+      <div class="stat v"><div class="k">Vulnerable flags</div><div class="n" id="st-vuln">0</div></div>
+      <div class="stat g"><div class="k">Replies sent</div><div class="n" id="st-sent">0</div></div>
+    </div>
+    <div class="eod-cols">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="panel">
+          <h3><i class="fa-solid fa-table-list"></i> Case register — auto-logged</h3>
+          <table class="eod">
+            <thead><tr><th>Ref</th><th>Customer / issue</th><th>Classification</th><th>Status</th><th>Logged</th></tr></thead>
+            <tbody id="eod-rows"></tbody>
+          </table>
+        </div>
+        <div class="panel">
+          <h3><i class="fa-solid fa-terminal"></i> Activity stream</h3>
+          <div class="livelog" id="livelog"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3><i class="fa-regular fa-paper-plane"></i> Auto-generated EOD summary
+          <button class="btn" id="regen-eod"><i class="fa-solid fa-rotate"></i> Refresh</button>
+          <button class="btn" id="copy-eod"><i class="fa-regular fa-copy"></i> Copy</button>
+        </h3>
+        <div class="eod-draft"><textarea id="eod-text" spellcheck="false"></textarea></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= data ================= */
+const TICKETS = [
+ {
+  id:'T-4821', tab:'Item Not Received', badge:'c',
+  subject:'Item Not Received', requester:'Jane (Dora)', brand:'Next',
+  issue:'Item Not Received', order:'04 Jun 2025', item:'AW1569 · Size 40',
+  queue:'b21e0a6-b9ba-493b', email:'test.customer@example.com', phone:'+38 123 455 6634',
+  postcode:'10000', country:'UK', addr:'123 Main St',
+  trail:[
+   {who:'Jane (Dora)', side:'cust', when:'20 Jun 09:30', body:[
+    'Order placed 4 June — item AW1569, size 40. Reorder required: No.',
+    'I have not received the order from 4th of June. The order was paid for and now 16 days later I still have not received it. I kindly ask for urgent feedback on when the order will arrive, or for it to be sent again.']},
+   {who:'The Next Team', side:'adv', when:'21 Jun 14:00', body:[
+    'Hi Dora, thank you for contacting us. I apologise for the inconvenience regarding the item you have not yet received.',
+    'I have contacted the courier to find out the delivery status. Please allow 3 working days for an update. Could you also confirm the phone number registered on your account?']},
+   {who:'Jane (Dora)', side:'cust', when:'22 Jun 10:45', body:['Hi, phone number is +38 123 455 6634. Thank you — I look forward to receiving my order!']},
+   {who:'The Next Team', side:'adv', when:'25 Jun 16:30', body:[
+    'Hi Dora, I am so sorry for the delay with your order placed on 4th June. The courier has faced issues with the delivery — a change of delivery location caused further delay.',
+    'You can track the parcel with tracking number 15502321716908. We will be in touch as soon as we have an update.']},
+   {who:'Jane (Dora)', side:'cust', when:'08 Jul 10:15', latest:true, body:[
+    'Thank you for your reply. Unfortunately I still have not received the package and every attempt to get answers from the delivery service is unsuccessful — they are not replying to my emails and are impossible to reach by phone.',
+    'I urge you to fast track my delivery. I keep getting a message every day that my package is at their warehouse with no sign of delivery.',
+    'I am waiting almost a month now for a paid product. If you cannot get them to deliver it, I expect another one to be shipped and fast tracked. This is really not acceptable.']}
+  ],
+  classification:{
+    complaint:{is:true, conf:94, level:'Expression of dissatisfaction — log as complaint',
+      why:'Repeated chases (3rd contact), ~35 days since order, explicit escalation language in latest email.',
+      signals:[
+        {label:'“not acceptable”', ev:'This is really not acceptable'},
+        {label:'“almost a month”', ev:'waiting almost a month'},
+        {label:'“I urge you”', ev:'I urge you to fast track'},
+        {label:'“I expect”', ev:'I expect another one to be shipped'}
+      ]},
+    vuln:{is:false, conf:88, why:'No health, life-event, resilience or capability indicators detected in the trail.', drivers:[], signals:[]}
+  },
+  summary:[
+   {d:'20 Jun',who:'cu',t:'Customer: order of 4 Jun not received (16 days); asks for urgent update or re-shipment.'},
+   {d:'21 Jun',who:'ad',t:'Advisor: apologised, contacted courier (3-day SLA), requested phone number.'},
+   {d:'25 Jun',who:'ad',t:'Advisor: confirmed courier delay (location change), shared tracking, escalated to priority.'},
+   {d:'08 Jul',who:'cu',t:'Customer: still not delivered, courier unreachable — demands fast-track or replacement. Frustration high.'}
+  ],
+  templates:[
+    {key:'complaint-ack', label:'Complaint acknowledgement + resolution', rec:true},
+    {key:'item-lost', label:'Item lost in transit — replace / refund', rec:true},
+    {key:'confirmed-delay', label:'Confirmed delay + delivery refund'},
+    {key:'allow-longer', label:'Allow longer'}
+  ]
+ },
+ {
+  id:'T-4822', tab:'Re: Faulty Item', badge:'v',
+  subject:'Re: Faulty Item', requester:'Margaret H.', brand:'Next',
+  issue:'Damaged Product', order:'26 Jun 2025', item:'DR2201 · Size 14',
+  queue:'a77c2b1-42fe-90aa', email:'m.h@example.com', phone:'+44 7700 900123',
+  postcode:'LS1 4DY', country:'UK', addr:'8 Elm Grove, Leeds',
+  trail:[
+   {who:'Margaret H.', side:'cust', when:'01 Jul 10:30', latest:true, body:[
+    'Hello, I received my recent order but the dress has a tear on the sleeve, so I would like a replacement please.',
+    'I should mention I was recently widowed and I am still sorting out my late husband\u2019s accounts, so money is quite tight at the moment — I can\u2019t really afford to be without the refund for long if a replacement isn\u2019t possible.',
+    'Also, my arthritis makes it difficult for me to get to the post office, so I\u2019d be grateful if the return could be collected from my home. Sorry, I don\u2019t really understand how the returns portal works either.']}
+  ],
+  classification:{
+    complaint:{is:false, conf:81, level:null,
+      why:'Faulty-item service request; polite tone, no dissatisfaction with service handling yet. Monitor if unresolved.',
+      signals:[]},
+    vuln:{is:true, conf:92,
+      why:'Multiple FCA vulnerability drivers detected. Adjust tone, offer home collection, avoid self-serve-only journeys.',
+      drivers:[
+        {icon:'fa-heart-crack', t:'Life event — recent bereavement'},
+        {icon:'fa-hand-holding-heart', t:'Health — arthritis / limited mobility'},
+        {icon:'fa-scale-unbalanced', t:'Resilience — low financial buffer'},
+        {icon:'fa-circle-question', t:'Capability — struggles with digital returns'}
+      ],
+      signals:[
+        {label:'“recently widowed”', ev:'recently widowed'},
+        {label:'“money is quite tight”', ev:'money is quite tight'},
+        {label:'“my arthritis”', ev:'my arthritis makes it difficult'},
+        {label:'“don\u2019t understand the portal”', ev:'don\u2019t really understand how the returns portal works'}
+      ]}
+  },
+  summary:[
+   {d:'01 Jul',who:'cu',t:'Customer: dress arrived torn, wants replacement. Discloses bereavement, arthritis (needs home collection), financial pressure, and difficulty using the digital returns portal.'}
+  ],
+  templates:[
+    {key:'vuln-replacement', label:'Replacement + home collection (adjusted tone)', rec:true},
+    {key:'offer-refund', label:'Offer refund (fast-tracked)'},
+    {key:'offer-replacement', label:'Standard replacement'}
+  ]
+ },
+ {
+  id:'T-4823', tab:'Re: Item Not Received', badge:'n',
+  subject:'Re: Item Not Received', requester:'Mark T.', brand:'Next',
+  issue:'Missing Parcel', order:'10 Jun 2025', item:'SH9902 · Size 9',
+  queue:'c19f7d3-11ab-77ce', email:'mark.t@example.com', phone:'+44 7700 900456',
+  postcode:'M4 5JW', country:'UK', addr:'21 Canal St, Manchester',
+  trail:[
+   {who:'Mark T.', side:'cust', when:'20 Jun 09:15', latest:true, body:[
+    'Hi, my order from June 10th shows as delivered on the tracking, but I never received it. Could you look into it? Thanks.']}
+  ],
+  classification:{
+    complaint:{is:false, conf:90, level:null, why:'First contact, neutral tone. Standard denial-of-receipt investigation — not a complaint.', signals:[]},
+    vuln:{is:false, conf:93, why:'No vulnerability indicators detected.', drivers:[], signals:[]}
+  },
+  summary:[{d:'20 Jun',who:'cu',t:'Customer: tracking shows delivered but parcel not received; requests investigation.'}],
+  templates:[
+    {key:'investigation', label:'Initiate DOR investigation', rec:true},
+    {key:'contact-courier', label:'Contact courier'}
+  ]
+ }
+];
+
+const DRAFTS = {
+ 'complaint-ack':`Dear Jane,\n\nThank you for your email, and I am sincerely sorry that you are still waiting for your order almost a month after placing it. I completely understand your frustration, and I want to confirm that I have logged this as a formal complaint (ref <COMPLAINT REF>) so it receives the priority it deserves.\n\nAs the courier has been unable to complete delivery, I have arranged for a replacement to be dispatched today on our fastest available service, at no extra cost. Your delivery charge of <AMOUNT> has also been refunded — please allow 3–5 working days for this to appear.\n\nYou do not need to do anything further. I will personally monitor the replacement and update you within 48 hours.\n\nKind regards,\nThe Next Team`,
+ 'item-lost':`Dear Jane,\n\nThank you for your email, and I'm very sorry that your order has not arrived. Having investigated with our delivery partner, the parcel appears to have been lost in transit.\n\nTo put this right, we can either:\n•  Dispatch a replacement on a fast-tracked service (subject to availability), or\n•  Issue a full refund to your original payment method.\n\nPlease let me know which you'd prefer and I'll action it immediately.\n\nKind regards,\nThe Next Team`,
+ 'confirmed-delay':`Dear Jane,\n\nThank you for your email. I can confirm there has been a delay with your order, which is now due to be delivered on <DATE>. As it did not arrive on time, I have refunded your delivery charge of <AMOUNT> (3–5 working days).\n\nKind regards,\nThe Next Team`,
+ 'allow-longer':`Dear Jane,\n\nThank you for your patience. Your parcel is now due within the next <TIME FRAME>, and I have refunded your delivery charge of <AMOUNT>.\n\nKind regards,\nThe Next Team`,
+ 'vuln-replacement':`Dear Margaret,\n\nThank you for getting in touch, and I'm very sorry the dress arrived damaged — especially at what I appreciate is a difficult time for you. Please don't worry about a thing; we will take care of all of this for you.\n\nHere is what I have arranged:\n•  A replacement dress will be sent to you free of charge — there is nothing for you to pay.\n•  A courier will collect the damaged dress from your home on a day that suits you, so there is no need to visit the post office or use the online portal.\n•  If you would prefer a refund instead at any point, just reply to this email and I will fast-track it the same day.\n\nIf it is easier to arrange the collection by phone, you can call us free on <FREEPHONE> and quote reference <REF> — a colleague will be expecting your call.\n\nWith kind regards,\nThe Next Team`,
+ 'offer-refund':`Dear Margaret,\n\nI'm sorry your dress arrived damaged. I have fast-tracked a full refund to your original payment method — you should see it within 1–2 working days. We will also arrange a free home collection of the item at a time that suits you.\n\nKind regards,\nThe Next Team`,
+ 'offer-replacement':`Dear Margaret,\n\nI'm sorry your dress arrived damaged. I have arranged a free replacement, and a returns label for the damaged item.\n\nKind regards,\nThe Next Team`,
+ 'investigation':`Dear Mark,\n\nThank you for letting us know. I'm sorry your parcel shows as delivered but hasn't reached you. I have opened an investigation with our courier (ref <REF>), which typically completes within 3 working days. If the parcel cannot be located, we will send a replacement or issue a full refund — whichever you prefer.\n\nKind regards,\nThe Next Team`,
+ 'contact-courier':`Dear Mark,\n\nThank you for your email. I have contacted the courier for the delivery evidence (GPS/photo) and will update you within 3 working days.\n\nKind regards,\nThe Next Team`
+};
+
+/* ================= state ================= */
+const state = {}; // per-ticket runtime state
+const activity = [];
+let openCount = 0, sentCount = 0;
+
+const now = () => new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+function logEvent(kind, text){
+  activity.push({t:now(), kind, text});
+  renderLiveLog();
+}
+function renderLiveLog(){
+  const el = document.getElementById('livelog');
+  el.innerHTML = activity.map(a=>{
+    const cls = a.kind==='complaint'?'ev-c':a.kind==='vuln'?'ev-v':a.kind==='ok'?'ok':'';
+    return `<div><span class="t">${a.t}</span>  <span class="${cls}">${a.text}</span></div>`;
+  }).join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+/* ================= render tabs & tickets ================= */
+const tabbar = document.getElementById('tabbar');
+const workspace = document.getElementById('workspace');
+
+TICKETS.forEach((tk,i)=>{
+  state[tk.id] = {scanned:false, confirmedC:false, confirmedV:false, sent:false, selected:new Set(), status:'Open'};
+  const tab = document.createElement('div');
+  tab.className='tab'+(i===0?' active':'');
+  tab.dataset.id=tk.id;
+  tab.innerHTML=`<span class="badge n"></span><span class="lbl">${tk.tab}</span><i class="fa-solid fa-xmark"></i>`;
+  tab.addEventListener('click',e=>{
+    if(e.target.classList.contains('fa-xmark')){ tab.style.display='none'; return; }
+    activateTicket(tk.id);
+  });
+  tabbar.appendChild(tab);
+
+  const t = document.createElement('div');
+  t.className='ticket'+(i===0?' on':'');
+  t.dataset.id=tk.id;
+  t.innerHTML = ticketHTML(tk);
+  workspace.appendChild(t);
+});
+const addTab=document.createElement('div');
+addTab.className='tab'; addTab.style.opacity='.6';
+addTab.innerHTML='<i class="fa-solid fa-plus"></i> <span class="lbl">Add</span>';
+tabbar.appendChild(addTab);
+
+function ticketHTML(tk){
+  const trail = tk.trail.map(m=>`
+    <div class="msg ${m.side} ${m.latest?'latest':''}" >
+      <div class="m-head"><span class="who">${m.who}</span>${m.latest?'<span class="pill w">latest</span>':''}<span class="when">${m.when}</span></div>
+      <div class="m-body">${m.body.map(p=>`<p>${p}</p>`).join('')}</div>
+    </div>`).join('');
+  const summ = tk.summary.map(s=>`<div class="summ-line ${s.who==='cu'?'cu':''}"><span class="d">${s.d}</span> · ${s.t}</div>`).join('');
+  const tmpls = tk.templates.map(t=>`
+    <button class="tmpl" data-key="${t.key}"><input type="checkbox">${t.label}${t.rec?'<span class="rec">AI pick</span>':''}</button>`).join('');
+  return `
+  <div class="col">
+    <div class="col-head"><i class="fa-solid fa-database"></i> Auto logger</div>
+    <div class="col-body">
+      <div class="flag-row" data-role="flags"><span class="flag n"><i class="fa-solid fa-circle-notch fa-spin"></i> Awaiting scan…</span></div>
+      <div class="log-item autofield"><label>Case ref</label><div class="val mono">${tk.id}</div></div>
+      <div class="log-item autofield"><label>Brand</label><div class="val">${tk.brand}</div></div>
+      <div class="log-item autofield"><label>Requester</label><div class="val">${tk.requester}</div></div>
+      <div class="log-item autofield"><label>Issue type</label><div class="val">${tk.issue}</div></div>
+      <div class="log-item autofield"><label>Order date</label><div class="val">${tk.order}</div></div>
+      <div class="log-item autofield"><label>Item no. &amp; size</label><div class="val">${tk.item}</div></div>
+      <div class="log-item autofield"><label>Genesys queue ID</label><div class="val mono">${tk.queue}…</div></div>
+      <div class="log-item"><label>Disposition</label><div class="val" data-role="dispo">Open — awaiting reply</div></div>
+      <div class="idv">
+        <h5><i class="fa-solid fa-user-check"></i> ID&amp;V — existing customer</h5>
+        <div class="grid">
+          <div><label>Email</label>${tk.email}</div>
+          <div><label>Phone</label>${tk.phone}</div>
+          <div><label>Postcode</label>${tk.postcode}</div>
+          <div><label>Country</label>${tk.country}</div>
+          <div style="grid-column:1/-1"><label>Address</label>${tk.addr}</div>
+        </div>
+        <div class="idv-btns">
+          <button class="ok-b" data-role="idv-ok"><i class="fa-solid fa-check"></i> Confirmed</button>
+          <button class="no-b"><i class="fa-solid fa-xmark"></i> Not confirmed</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="trail-head">
+      <div class="subj">${tk.subject}</div>
+      <div class="meta">${tk.requester} · ${tk.trail.length} email${tk.trail.length>1?'s':''} in trail · queue ${tk.queue}…</div>
+    </div>
+    <div class="trail" data-role="trail">${trail}</div>
+    <div class="replybox">
+      <div class="editor" contenteditable="true" data-role="editor"><span class="ph">Type your reply, or generate one from a template →</span></div>
+      <div class="reply-actions">
+        <button class="btn primary" data-role="send"><i class="fa-regular fa-paper-plane"></i> Send reply</button>
+        <button class="btn" data-role="save">Save draft</button>
+        <button class="btn" data-role="clear">Clear</button>
+        <span class="tone-note" data-role="tone"><i class="fa-solid fa-hand-holding-heart"></i> Tone adjusted for vulnerable customer</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col ai-col">
+    <div class="col-head"><i class="fa-solid fa-wand-magic-sparkles"></i> AI assist</div>
+    <div class="scanbar" data-role="scan"><i class="fa-solid fa-radar"></i><span data-role="scantext">Scanning trail…</span><span class="sweep"><i></i></span></div>
+    <div class="col-body">
+      <div class="ai-section" data-role="classification" style="display:none">
+        <h4><i class="fa-solid fa-tags"></i> Classification</h4>
+        <div data-role="class-cards"></div>
+      </div>
+      <div class="ai-section">
+        <h4><i class="fa-regular fa-rectangle-list"></i> Conversation summary <span style="margin-left:auto" class="pill n">${tk.trail.length} emails</span></h4>
+        ${summ}
+      </div>
+      <div class="ai-section">
+        <h4><i class="fa-regular fa-file-lines"></i> Response templates</h4>
+        ${tmpls}
+        <div class="gen-row">
+          <button class="btn primary" data-role="action"><i class="fa-solid fa-bolt"></i> Generate draft</button>
+          <button class="btn" data-role="rephrase"><i class="fa-solid fa-wand-magic-sparkles"></i> Rephrase</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ================= classification ================= */
+function activateTicket(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.id===id));
+  document.querySelectorAll('.ticket').forEach(t=>t.classList.toggle('on',t.dataset.id===id));
+  runScan(id);
+}
+
+function runScan(id){
+  const st = state[id];
+  if(st.scanned) return;
+  st.scanned = true;
+  const tk = TICKETS.find(t=>t.id===id);
+  const root = document.querySelector(`.ticket[data-id="${id}"]`);
+  openCount++;
+  logEvent('info', `${tk.id} opened — auto-logged brand/requester/issue/order fields from email form`);
+
+  setTimeout(()=>{
+    const scan = root.querySelector('[data-role="scan"]');
+    scan.classList.add('done');
+    scan.querySelector('[data-role="scantext"]').textContent = 'Scan complete';
+    renderClassification(tk, root);
+    updateStats();
+  }, 1100);
+}
+
+function renderClassification(tk, root){
+  const c = tk.classification.complaint, v = tk.classification.vuln;
+  const box = root.querySelector('[data-role="class-cards"]');
+  root.querySelector('[data-role="classification"]').style.display='block';
+  let html='';
+
+  if(c.is){
+    html += `<div class="class-card c">
+      <div class="top"><i class="fa-solid fa-triangle-exclamation"></i><span class="t">Complaint detected</span><span class="conf">${c.conf}% conf.</span></div>
+      <div class="why"><strong>${c.level}.</strong> ${c.why}</div>
+      <div class="sig-chips">${c.signals.map(s=>`<span class="sig c" data-ev="${s.ev}" data-k="c">${s.label}</span>`).join('')}</div>
+      <div class="hitl"><button class="yes" data-role="confirm-c"><i class="fa-solid fa-check"></i> Confirm &amp; log complaint</button><button class="no" data-role="dismiss-c">Not a complaint</button></div>
+    </div>`;
+  } else {
+    html += `<div class="class-card n">
+      <div class="top"><i class="fa-regular fa-circle-check"></i><span class="t">No complaint detected</span><span class="conf">${c.conf}% conf.</span></div>
+      <div class="why">${c.why}</div>
+    </div>`;
+  }
+
+  if(v.is){
+    html += `<div class="class-card v">
+      <div class="top"><i class="fa-solid fa-hand-holding-heart"></i><span class="t">Vulnerable customer indicators</span><span class="conf">${v.conf}% conf.</span></div>
+      <div class="why">${v.why}</div>
+      ${v.drivers.map(d=>`<div class="drv"><i class="fa-solid ${d.icon}"></i>${d.t}</div>`).join('')}
+      <div class="sig-chips">${v.signals.map(s=>`<span class="sig v" data-ev="${s.ev}" data-k="v">${s.label}</span>`).join('')}</div>
+      <div class="hitl"><button class="yes" data-role="confirm-v"><i class="fa-solid fa-check"></i> Confirm &amp; flag account</button><button class="no" data-role="dismiss-v">Dismiss</button></div>
+    </div>`;
+  } else {
+    html += `<div class="class-card n">
+      <div class="top"><i class="fa-regular fa-circle-check"></i><span class="t">No vulnerability indicators</span><span class="conf">${v.conf}% conf.</span></div>
+      <div class="why">${v.why}</div>
+    </div>`;
+  }
+  box.innerHTML = html;
+
+  // flags in logger
+  const flags = root.querySelector('[data-role="flags"]');
+  let f='';
+  if(c.is) f+=`<span class="flag c"><i class="fa-solid fa-triangle-exclamation"></i> Complaint</span>`;
+  if(v.is) f+=`<span class="flag v"><i class="fa-solid fa-hand-holding-heart"></i> Vulnerable</span>`;
+  if(!c.is&&!v.is) f+=`<span class="flag n"><i class="fa-regular fa-circle-check"></i> Standard query</span>`;
+  flags.innerHTML=f;
+
+  // tab badge
+  const tab = document.querySelector(`.tab[data-id="${tk.id}"] .badge`);
+  tab.className = 'badge ' + (c.is?'c':v.is?'v':'n');
+
+  // evidence highlighting in trail
+  const trail = root.querySelector('[data-role="trail"]');
+  [...c.signals.map(s=>({...s,k:'c'})), ...v.signals.map(s=>({...s,k:'v'}))].forEach(s=>{
+    trail.querySelectorAll('.m-body p').forEach(p=>{
+      if(p.innerHTML.includes(s.ev)) p.innerHTML = p.innerHTML.replace(s.ev, `<mark class="ev-${s.k}" data-ev="${s.ev}">${s.ev}</mark>`);
+    });
+  });
+
+  // auto-log events
+  if(c.is) logEvent('complaint', `${tk.id} AI classification: COMPLAINT (${c.conf}%) — "${c.signals[0].ev}" — awaiting advisor confirmation`);
+  if(v.is) logEvent('vuln', `${tk.id} AI classification: VULNERABLE CUSTOMER (${v.conf}%) — drivers: ${v.drivers.map(d=>d.t.split(' — ')[0]).join(', ')}`);
+  if(!c.is&&!v.is) logEvent('info', `${tk.id} AI classification: standard query — no flags`);
+  if(v.is) root.querySelector('[data-role="tone"]').classList.add('on');
+  updateStats();
+}
+
+/* ================= interactions (event delegation) ================= */
+document.addEventListener('click', e=>{
+  const root = e.target.closest('.ticket'); if(!root) return;
+  const id = root.dataset.id, tk = TICKETS.find(t=>t.id===id), st = state[id];
+
+  // evidence chip -> scroll to highlight
+  const sig = e.target.closest('.sig');
+  if(sig){
+    const m = root.querySelector(`mark[data-ev="${sig.dataset.ev}"]`);
+    if(m){ m.scrollIntoView({behavior:'smooth',block:'center'}); m.classList.remove('pulse'); void m.offsetWidth; m.classList.add('pulse'); }
+    return;
+  }
+
+  // confirm complaint
+  if(e.target.closest('[data-role="confirm-c"]')){
+    const b = e.target.closest('[data-role="confirm-c"]');
+    if(!st.confirmedC){ st.confirmedC=true; b.classList.add('done'); b.innerHTML='<i class="fa-solid fa-check-double"></i> Complaint logged · CMP-'+id.slice(2);
+      logEvent('complaint', `${tk.id} advisor CONFIRMED complaint — logged to complaints register as CMP-${id.slice(2)} (root cause: courier delivery failure)`);
+      root.querySelector('[data-role="dispo"]').textContent='Open — complaint logged';
+      updateStats(); }
+    return;
+  }
+  if(e.target.closest('[data-role="dismiss-c"]')){
+    logEvent('info', `${tk.id} advisor overrode complaint classification — dismissed`); 
+    e.target.closest('.class-card').style.opacity=.45; return;
+  }
+  // confirm vulnerability
+  if(e.target.closest('[data-role="confirm-v"]')){
+    const b = e.target.closest('[data-role="confirm-v"]');
+    if(!st.confirmedV){ st.confirmedV=true; b.classList.add('done'); b.innerHTML='<i class="fa-solid fa-check-double"></i> Account flagged · care team notified';
+      logEvent('vuln', `${tk.id} advisor CONFIRMED vulnerability — account flagged (bereavement, health, resilience, capability); routed to customer-care queue`);
+      updateStats(); }
+    return;
+  }
+  if(e.target.closest('[data-role="dismiss-v"]')){
+    logEvent('info', `${tk.id} advisor overrode vulnerability classification — dismissed`);
+    e.target.closest('.class-card').style.opacity=.45; return;
+  }
+
+  // template select
+  const tmpl = e.target.closest('.tmpl');
+  if(tmpl){
+    const key=tmpl.dataset.key, cb=tmpl.querySelector('input');
+    cb.checked=!cb.checked;
+    cb.checked?st.selected.add(key):st.selected.delete(key);
+    return;
+  }
+
+  // generate draft (merge up to 2)
+  if(e.target.closest('[data-role="action"]')){
+    const keys=[...st.selected];
+    const ed = root.querySelector('[data-role="editor"]');
+    if(!keys.length){ ed.innerHTML='<span class="ph">Select at least one template first.</span>'; return; }
+    let text;
+    if(keys.length===1) text = DRAFTS[keys[0]];
+    else {
+      const parts = keys.map(k=>DRAFTS[k].replace(/^Dear .*?\n\n/s,'').replace(/\n\nKind regards[\s\S]*$/,'').replace(/\n\nWith kind regards[\s\S]*$/,''));
+      const salut = DRAFTS[keys[0]].match(/^Dear .*?,/)[0];
+      text = salut+'\n\n'+parts.join('\n\n')+'\n\nKind regards,\nThe Next Team';
+    }
+    ed.innerText = text;
+    root.querySelectorAll('.tmpl').forEach(t=>{ if(st.selected.has(t.dataset.key)) t.classList.add('used'); t.querySelector('input').checked=false; });
+    logEvent('info', `${tk.id} draft generated from template${keys.length>1?'s (merged)':''}: ${keys.join(' + ')}`);
+    st.selected.clear();
+    ed.scrollIntoView({behavior:'smooth',block:'nearest'});
+    return;
+  }
+
+  // rephrase (simulated)
+  if(e.target.closest('[data-role="rephrase"]')){
+    const b=e.target.closest('[data-role="rephrase"]');
+    b.disabled=true; b.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Rephrasing…';
+    setTimeout(()=>{ b.disabled=false; b.innerHTML='<i class="fa-solid fa-wand-magic-sparkles"></i> Rephrase';
+      logEvent('info', `${tk.id} AI rephrase applied to draft (tone: ${tk.classification.vuln.is?'supportive / plain-English':'professional'})`);},1300);
+    return;
+  }
+
+  // send reply
+  if(e.target.closest('[data-role="send"]')){
+    const ed = root.querySelector('[data-role="editor"]');
+    if(!ed.innerText.trim() || ed.querySelector('.ph')){ ed.innerHTML='<span class="ph">Nothing to send — write or generate a reply first.</span>'; return; }
+    if(!st.sent){ st.sent=true; sentCount++; st.status='Replied';
+      root.querySelector('[data-role="dispo"]').textContent = st.confirmedC?'Replied — complaint open':'Replied — pending customer';
+      logEvent('ok', `${tk.id} reply SENT to ${tk.requester} (${ed.innerText.trim().split(/\s+/).length} words) — disposition auto-logged`);
+      const trail = root.querySelector('[data-role="trail"]');
+      const div=document.createElement('div');
+      div.className='msg adv';
+      div.innerHTML=`<div class="m-head"><span class="who">The Next Team (A. Sharma)</span><span class="pill g">sent</span><span class="when">${now().slice(0,5)}</span></div><div class="m-body"><p>${ed.innerText.trim().replace(/\n/g,'<br>')}</p></div>`;
+      trail.appendChild(div); div.scrollIntoView({behavior:'smooth'});
+      ed.innerHTML='<span class="ph">Reply sent. Type a follow-up if needed…</span>';
+      updateStats(); }
+    return;
+  }
+  if(e.target.closest('[data-role="clear"]')){
+    root.querySelector('[data-role="editor"]').innerHTML='<span class="ph">Type your reply, or generate one from a template →</span>';
+    root.querySelectorAll('.tmpl').forEach(t=>t.classList.remove('used'));
+    return;
+  }
+  if(e.target.closest('[data-role="save"]')){ logEvent('info', `${tk.id} draft saved`); return; }
+  if(e.target.closest('[data-role="idv-ok"]')){ logEvent('ok', `${tk.id} ID&V security confirmed for ${tk.requester}`); return; }
+});
+
+// clear placeholder on focus
+document.addEventListener('focusin', e=>{
+  if(e.target.dataset?.role==='editor' && e.target.querySelector('.ph')) e.target.innerHTML='';
+});
+
+/* ================= EOD view ================= */
+function updateStats(){
+  const complaints = TICKETS.filter(t=>state[t.id].confirmedC).length + TICKETS.filter(t=>t.classification.complaint.is && !state[t.id].confirmedC && state[t.id].scanned).length*0; 
+  const cDetected = TICKETS.filter(t=>state[t.id].scanned && t.classification.complaint.is).length;
+  const vDetected = TICKETS.filter(t=>state[t.id].scanned && t.classification.vuln.is).length;
+  document.getElementById('st-handled').textContent = openCount;
+  document.getElementById('st-complaints').textContent = cDetected;
+  document.getElementById('st-vuln').textContent = vDetected;
+  document.getElementById('st-sent').textContent = sentCount;
+  renderEodRows();
+  buildEodText();
+}
+
+function renderEodRows(){
+  const tb=document.getElementById('eod-rows');
+  tb.innerHTML = TICKETS.map(t=>{
+    const st=state[t.id];
+    if(!st.scanned) return `<tr><td class="mono">${t.id}</td><td>${t.requester} — ${t.issue}</td><td><span class="pill n">not opened</span></td><td><span class="pill n">queued</span></td><td class="mono">—</td></tr>`;
+    let cls='';
+    if(t.classification.complaint.is) cls+=`<span class="pill c">Complaint${st.confirmedC?' ✓ logged':' · unconfirmed'}</span> `;
+    if(t.classification.vuln.is) cls+=`<span class="pill v">Vulnerable${st.confirmedV?' ✓ flagged':' · unconfirmed'}</span>`;
+    if(!cls) cls='<span class="pill n">Standard</span>';
+    const status = st.sent?'<span class="pill g">Replied</span>':'<span class="pill w">Open</span>';
+    return `<tr><td class="mono">${t.id}</td><td><strong>${t.requester}</strong><br><span style="color:var(--ink-3)">${t.issue}</span></td><td>${cls}</td><td>${status}</td><td class="mono">${now().slice(0,5)}</td></tr>`;
+  }).join('');
+}
+
+function buildEodText(){
+  const d = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const opened = TICKETS.filter(t=>state[t.id].scanned);
+  const complaints = opened.filter(t=>t.classification.complaint.is);
+  const vulns = opened.filter(t=>t.classification.vuln.is);
+  const replied = opened.filter(t=>state[t.id].sent);
+  const open = opened.filter(t=>!state[t.id].sent);
+  let s = `Subject: EOD Update — A. Sharma — ${d}\n\nHi Team,\n\nEnd-of-day summary (auto-generated by Email Assist):\n\nVOLUME\n• Emails handled: ${opened.length}\n• Replies sent: ${replied.length}\n• Still open: ${open.length}${open.length?` (${open.map(t=>t.id).join(', ')})`:''}\n\nCOMPLAINTS (${complaints.length})\n`;
+  s += complaints.length ? complaints.map(t=>`• ${t.id} — ${t.requester} — ${t.issue}. ${t.classification.complaint.level}. ${state[t.id].confirmedC?`Logged as CMP-${t.id.slice(2)}; resolution offered (replacement fast-tracked + delivery refund).`:'Detected by AI — pending advisor confirmation.'}`).join('\n') : '• None logged today.';
+  s += `\n\nVULNERABLE CUSTOMERS (${vulns.length})\n`;
+  s += vulns.length ? vulns.map(t=>`• ${t.id} — ${t.requester} — drivers: ${t.classification.vuln.drivers.map(x=>x.t.split(' — ')[0]).join(', ')}. ${state[t.id].confirmedV?'Account flagged; home collection arranged; care team notified.':'Detected by AI — pending advisor confirmation.'}`).join('\n') : '• None identified today.';
+  s += `\n\nHANDOVER / FOLLOW-UPS\n`;
+  const fu=[];
+  if(opened.find(t=>t.id==='T-4821'&&state['T-4821'].sent)) fu.push('• T-4821 — monitor fast-tracked replacement; update customer within 48h.');
+  if(opened.find(t=>t.id==='T-4822'&&state['T-4822'].sent)) fu.push('• T-4822 — confirm home collection booking; check refund preference.');
+  if(opened.find(t=>t.id==='T-4823'&&state['T-4823'].sent)) fu.push('• T-4823 — courier investigation due back in 3 working days.');
+  s += fu.length?fu.join('\n'):'• No outstanding follow-ups.';
+  s += `\n\nAll classifications and dispositions above were auto-logged in the case register.\n\nThanks,\nA. Sharma`;
+  document.getElementById('eod-text').value = s;
+}
+
+/* view switching */
+document.getElementById('vw-work').addEventListener('click',()=>{
+  document.getElementById('vw-work').classList.add('on'); document.getElementById('vw-eod').classList.remove('on');
+  document.getElementById('workspace').classList.add('on'); document.getElementById('eodview').classList.remove('on');
+  document.getElementById('tabbar').style.display='flex';
+});
+document.getElementById('vw-eod').addEventListener('click',()=>{
+  document.getElementById('vw-eod').classList.add('on'); document.getElementById('vw-work').classList.remove('on');
+  document.getElementById('eodview').classList.add('on'); document.getElementById('workspace').classList.remove('on');
+  document.getElementById('tabbar').style.display='none';
+  updateStats();
+});
+document.getElementById('regen-eod').addEventListener('click',buildEodText);
+document.getElementById('copy-eod').addEventListener('click',e=>{
+  navigator.clipboard.writeText(document.getElementById('eod-text').value).then(()=>{
+    const b=e.target.closest('button'); b.classList.add('copied'); b.innerHTML='<i class="fa-solid fa-check"></i> Copied';
+    setTimeout(()=>{b.classList.remove('copied'); b.innerHTML='<i class="fa-regular fa-copy"></i> Copy';},1600);
+  });
+});
+
+/* clock */
+setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});},1000);
+document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+
+/* boot */
+logEvent('info','Session started — Email Assist auto-logger active');
+runScan('T-4821');
+updateStats();
+</script>
+</body>
+</html>
